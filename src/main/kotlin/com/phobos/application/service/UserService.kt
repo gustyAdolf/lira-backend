@@ -51,7 +51,7 @@ class UserService(
 
     @Transactional(readOnly = true)
     fun getMentalDisordersByUserId(userId: Int): List<MentalDisorderResponse> {
-        val user = userRepository.findById(userId.toLong())
+        val user = userRepository.findById(userId)
         var mentalDisorders = emptyList<MentalDisorderResponse>()
         user.ifPresent {
             mentalDisorders = it.userDisorders.map {

@@ -5,7 +5,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 
-interface UserRepository : JpaRepository<User, Long> {
+interface UserRepository : JpaRepository<User, Int> {
 
     fun findByEmail(email: String): User?
 

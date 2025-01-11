@@ -6,7 +6,8 @@ import com.phobos.application.repository.SessionRepository
 import com.phobos.infrastructure.mapper.SessionMapper
 import com.phobos.infrastructure.persistence.Session
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.domain.Sort
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -14,14 +15,10 @@ import org.springframework.transaction.annotation.Transactional
 class SessionService(
     @Autowired private val sessionRepository: SessionRepository
 ) {
+
     @Transactional(readOnly = true)
-    fun getSessionsBy(userId: Int, mentalDisorderId: Int, dateOrder: String): List<SessionResponse> {
-        val sort = if (dateOrder.equals("asc", ignoreCase = true)) {
-            Sort.by("sessionDate").ascending()
-        } else {
-            Sort.by("sessionDate").descending()
-        }
-        return sessionRepository.findSessionByUserIdAndMentalDisorderId(userId, mentalDisorderId, sort)
+    fun getSessions(userId: Int, mentalDisorderId: Int, pageable: Pageable): Page<SessionResponse> {
+        return sessionRepository.findSessionByUserIdAndMentalDisorderId(userId, mentalDisorderId, pageable)
             .map { SessionMapper.entityToResponse(it) }
     }
 

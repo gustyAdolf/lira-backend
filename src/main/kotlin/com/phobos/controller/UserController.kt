@@ -5,6 +5,7 @@ import com.phobos.application.dto.MentalDisorderResponse
 import com.phobos.application.dto.user.UserRequest
 import com.phobos.application.dto.user.UserResponse
 import com.phobos.application.service.UserService
+import com.phobos.application.util.PageableUtil
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
@@ -32,14 +33,7 @@ class UserController(
         @RequestParam(defaultValue = "10") size: Int,
         @RequestParam(defaultValue = "name,asc") sort: String,
     ): ResponseEntity<Page<UserResponse>> {
-        val sortParams = sort.split(",")
-        val sortField = sortParams[0]
-        val sortDirection = if (sortParams.size > 1 && sortParams[1].equals("desc")) {
-            Sort.Direction.DESC
-        } else {
-            Sort.Direction.ASC
-        }
-        val pageable: Pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortField))
+        val pageable: Pageable = PageableUtil.getPageableFrom(page, size, sort)
         val userPage: Page<UserResponse> = userService.getUsers(name, mentalDisorder, pageable)
         return ResponseEntity.ok(userPage)
     }
