@@ -35,5 +35,8 @@ data class User(
     val releaseDate: LocalDate,
 
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
-    var userDisorders: List<UserDisorder>
+    var userDisorders: List<UserDisorder> = emptyList(),
+
+    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
+    val userCompanies: List<UserCompany> = emptyList(),
 )
