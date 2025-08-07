@@ -1,9 +1,6 @@
 package com.phobos.infrastructure.appointment
 
-import com.phobos.application.appointment.CreateAppointment
-import com.phobos.application.appointment.DeleteAppointment
-import com.phobos.application.appointment.GetAppointmentsByDateRanges
-import com.phobos.application.appointment.GetNextAppointments
+import com.phobos.application.appointment.*
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.format.annotation.DateTimeFormat
@@ -14,13 +11,15 @@ import java.time.LocalDate
 @RestController
 @RequestMapping("/appointment")
 class AppointmentController(
-    private val getAppointmentsByDateRanges: GetAppointmentsByDateRanges,
-    private val getNextAppointments: GetNextAppointments,
+    private val getTherapistAppointmentsByDateRanges: GetTherapistAppointmentsByDateRanges,
+    private val getPatientAppointmentsByDateRanges: GetPatientAppointmentsByDateRanges,
+    private val getNextTherapistAppointments: GetNextTherapistAppointments,
+    private val getNextPatientAppointments: GetNextPatientAppointments,
     private val createAppointment: CreateAppointment,
     private val deleteAppointment: DeleteAppointment
 ) {
     @GetMapping
-    fun getAppointments(
+    fun getTherapistAppointments(
         @RequestParam(value = "therapistId") therapistId: Int,
         @RequestParam(value = "startDate") @DateTimeFormat(pattern = "yyyy-MM-dd") startDate: LocalDate,
         @RequestParam(value = "endDate") @DateTimeFormat(pattern = "yyyy-MM-dd") endDate: LocalDate,
@@ -30,7 +29,7 @@ class AppointmentController(
 
         val sortDirection = if (direction.uppercase() == "DESC") Sort.Direction.DESC else Sort.Direction.ASC
         val sort = Sort.by(sortDirection, sortBy)
-        val appointments = getAppointmentsByDateRanges.execute(
+        val appointments = getTherapistAppointmentsByDateRanges.execute(
             therapistId,
             startDate.atStartOfDay(),
             endDate.atTime(23, 59, 59),
@@ -40,13 +39,44 @@ class AppointmentController(
         return ResponseEntity.ok(appointments.map { it.toResponse() })
     }
 
+    @GetMapping("/patient")
+    fun getPatientAppointments(
+        @RequestParam(value = "patientId") patientId: Int,
+        @RequestParam(value = "startDate") @DateTimeFormat(pattern = "yyyy-MM-dd") startDate: LocalDate,
+        @RequestParam(value = "endDate") @DateTimeFormat(pattern = "yyyy-MM-dd") endDate: LocalDate,
+        @RequestParam(value = "sortBy", defaultValue = "appointmentDate") sortBy: String,
+        @RequestParam(value = "direction", defaultValue = "ASC") direction: String,
+    ): ResponseEntity<List<AppointmentResponse>> {
+
+        val sortDirection = if (direction.uppercase() == "DESC") Sort.Direction.DESC else Sort.Direction.ASC
+        val sort = Sort.by(sortDirection, sortBy)
+        val appointments = getPatientAppointmentsByDateRanges.execute(
+            patientId,
+            startDate.atStartOfDay(),
+            endDate.atTime(23, 59, 59),
+            sort
+        )
+
+        return ResponseEntity.ok(appointments.map { it.toResponse() })
+    }
+
+    @GetMapping("/patient/next")
+    fun getNextPatientAppointments(
+        @RequestParam(value = "patientId") patientId: Int,
+        @RequestParam(value = "numOfAppointments", defaultValue = "10") numOfAppointments: Int,
+    ): ResponseEntity<List<AppointmentResponse>> {
+
+        val appointments = getNextPatientAppointments.execute(patientId, numOfAppointments)
+        return ResponseEntity.ok(appointments.map { it.toResponse() })
+    }
+
     @GetMapping("/next")
-    fun getNextAppointments(
+    fun getNextTherapistAppointments(
         @RequestParam(value = "therapistId") therapistId: Int
     ): ResponseEntity<List<AppointmentResponse>> {
 
         val pageable = PageRequest.of(0, 10)
-        val appointments = getNextAppointments.execute(therapistId, pageable)
+        val appointments = getNextTherapistAppointments.execute(therapistId, pageable)
         return ResponseEntity.ok(appointments.map { it.toResponse() })
     }
 

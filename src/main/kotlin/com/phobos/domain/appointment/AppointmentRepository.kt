@@ -6,14 +6,23 @@ import java.time.LocalDateTime
 
 interface AppointmentRepository {
 
-    fun getAppointments(
+    fun getTherapistAppointments(
         therapistId: Int,
         start: LocalDateTime,
         end: LocalDateTime,
         sort: Sort
     ): List<Appointment>
 
+    fun getPatientAppointments(
+        patientId: Int,
+        start: LocalDateTime,
+        end: LocalDateTime,
+        sort: Sort
+    ): List<Appointment>
+
     fun findNextAppointmentsForTherapist(therapistId: Int, pageable: Pageable): List<Appointment>
+
+    fun findNextAppointmentsForPatient(patientId: Int, size: Int): List<Appointment>
 
     fun save(appointment: Appointment): Appointment
 
