@@ -22,6 +22,18 @@ interface JpaAppointmentRepository : JpaRepository<AppointmentEntity, Long> {
     ): List<AppointmentEntity>
 
     @Query(
+        """SELECT a FROM AppointmentEntity a 
+            WHERE a.user.id = :patientId 
+            AND a.appointmentDate BETWEEN :startDate AND :endDate"""
+    )
+    fun findPatientAppointmentsWithDateRange(
+        @Param("patientId") patientId: Int,
+        @Param("startDate") startDate: LocalDateTime,
+        @Param("endDate") endDate: LocalDateTime,
+        sort: Sort
+    ): List<AppointmentEntity>
+
+    @Query(
         """SELECT a FROM AppointmentEntity a
             WHERE a.therapistId = :therapistId
                 AND a.appointmentDate > :now
@@ -30,6 +42,17 @@ interface JpaAppointmentRepository : JpaRepository<AppointmentEntity, Long> {
     fun findNextAppointmentsForTherapist(
         @Param("therapistId") therapistId: Int,
         @Param("now") now: LocalDateTime,
+        pageable: Pageable
+    ): List<AppointmentEntity>
+
+    @Query(
+        """SELECT a FROM AppointmentEntity a
+            WHERE a.user.id = :patientId
+                AND a.appointmentDate > CURRENT_DATE
+            ORDER BY a.appointmentDate ASC"""
+    )
+    fun findNextAppointmentsForPatient(
+        @Param("patientId") patientId: Int,
         pageable: Pageable
     ): List<AppointmentEntity>
 

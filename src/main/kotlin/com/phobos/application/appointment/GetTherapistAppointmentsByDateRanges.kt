@@ -9,14 +9,16 @@ import java.time.LocalDateTime
 
 @Service
 @Transactional(readOnly = true)
-class GetAppointmentsByDateRanges(
+class GetTherapistAppointmentsByDateRanges(
     private val appointmentRepository: AppointmentRepository
 ) {
-    fun execute(therapistId: Int,
-                start: LocalDateTime,
-                end: LocalDateTime,
-                sort: Sort): List<Appointment> {
+    fun execute(
+        therapistId: Int,
+        start: LocalDateTime,
+        end: LocalDateTime,
+        sort: Sort
+    ): List<Appointment> {
 
-        return appointmentRepository.getAppointments(therapistId, start, end, sort)
+        return appointmentRepository.getTherapistAppointments(therapistId, start, end, sort)
     }
 }
