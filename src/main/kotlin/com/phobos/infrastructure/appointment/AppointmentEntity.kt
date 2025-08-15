@@ -2,7 +2,7 @@ package com.phobos.infrastructure.appointment
 
 import com.phobos.domain.appointment.Appointment
 import com.phobos.infrastructure.mentaldisorder.MentalDisorderEntity
-import com.phobos.infrastructure.user.UserEntity
+import com.phobos.infrastructure.user.entity.UserEntity
 import jakarta.persistence.*
 import java.time.LocalDateTime
 
@@ -35,7 +35,7 @@ fun AppointmentEntity.toDomain(): Appointment {
         appointmentDuration = this.appointmentDuration,
         userId = this.user.id,
         name = this.user.name,
-        imageUrl = this.user.profileImagePath,
+        profileImagePath = this.user.profileImagePath,
         telephone = this.user.telephone,
         email = this.user.email,
         mentalDisorderId = this.mentalDisorder.id,

@@ -5,8 +5,10 @@ import org.springframework.data.domain.Pageable
 
 interface UserRepository {
     fun findById(id: Int): User?
-    fun findTherapistsByCompanyId(companyId: Int): List<User>
+    fun findTherapistsByCompanyId(companyId: Int): List<Therapist>
     fun findByEmail(email: String): User?
     fun findUsers(name: String?, mentalDisorder: String?, pageable: Pageable): Page<User>
     fun findAvailabilityByCompanyId(companyId: Int): List<TherapistAvailability>
+    fun savePatient(patient: Patient): Patient
+    fun saveTherapist(therapist: Therapist): Therapist
 }

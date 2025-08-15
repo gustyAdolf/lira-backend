@@ -8,7 +8,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 class Configuration : WebMvcConfigurer {
     override fun addCorsMappings(registry: CorsRegistry) {
         registry.addMapping("/**")
-            .allowedOrigins("http://localhost:4200") // Permitir solo desde el dominio del frontend
+            .allowedOrigins("http://localhost:4200", "http://localhost:54002") // Permitir solo desde el dominio del frontend
             .allowedMethods("GET", "POST", "PUT", "DELETE") // Métodos permitidos
             .allowCredentials(true); // Permitir credenciales (cookies, tokens, etc.)
     }

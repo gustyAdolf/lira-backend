@@ -1,5 +1,6 @@
-package com.phobos.infrastructure.user
+package com.phobos.infrastructure.user.jpa
 
+import com.phobos.infrastructure.user.entity.UserEntity
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.EntityGraph
@@ -26,9 +27,9 @@ interface JpaUserRepository : JpaRepository<UserEntity, Int> {
 
     @Query(
         """
-        SELECT u FROM UserEntity u 
-        JOIN u.userDisorders ud 
-        JOIN ud.mentalDisorder md 
+        SELECT p FROM PatientEntity p
+        JOIN p.userDisorders pd 
+        JOIN pd.mentalDisorder md 
         WHERE LOWER(md.name) LIKE LOWER(CONCAT('%', :disorder, '%'))
     """
     )
@@ -36,10 +37,10 @@ interface JpaUserRepository : JpaRepository<UserEntity, Int> {
 
     @Query(
         """
-        SELECT u FROM UserEntity u 
-        JOIN u.userDisorders ud 
-        JOIN ud.mentalDisorder md 
-        WHERE LOWER(u.name) LIKE LOWER(CONCAT('%', :name, '%')) 
+        SELECT p FROM PatientEntity p 
+        JOIN p.userDisorders pd 
+        JOIN pd.mentalDisorder md 
+        WHERE LOWER(p.user.name) LIKE LOWER(CONCAT('%', :name, '%')) 
         AND LOWER(md.name) LIKE LOWER(CONCAT('%', :disorder, '%'))
     """
     )

@@ -1,7 +1,6 @@
 package com.phobos.application.user
 
-import com.phobos.infrastructure.user.dto.UserResponse
-import com.phobos.infrastructure.user.dto.toResponse
+import com.phobos.domain.user.User
 import com.phobos.domain.user.UserRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -11,9 +10,8 @@ import org.springframework.transaction.annotation.Transactional
 class UserQueryService(
     private val userRepository: UserRepository
 ) {
-    fun getUserByEmail(email: String): UserResponse {
-        val user = userRepository.findByEmail(email)
+    fun getUserByEmail(email: String): User {
+        return userRepository.findByEmail(email)
             ?: throw RuntimeException("User not found")
-        return user.toResponse()
     }
 }
