@@ -43,4 +43,6 @@ fun CompanyEntity.toDomain(): Company = Company(
     releaseDate = this.releaseDate,
     cif = this.cif,
     companyAddress = this.companyAddress,
+    userType = UserType.COMPANY,
+    companyId = 0,
 )

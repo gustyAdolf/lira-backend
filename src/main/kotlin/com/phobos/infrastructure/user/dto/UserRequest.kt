@@ -22,6 +22,7 @@ import java.time.LocalDate
 )
 sealed class UserRequest {
     abstract val id: Int
+    abstract val companyId: Int
     abstract val userType: UserType
     abstract val name: String
     abstract val email: String
@@ -32,26 +33,28 @@ sealed class UserRequest {
     abstract val releaseDate: LocalDate?
 }
 
-fun UserRequest.toDomain(): User = when (this) {
+fun UserRequest.toDomain(userImagePath: String, encodePassword: String): User = when (this) {
     is PatientRequest -> Patient(
+        companyId = companyId,
         name = name,
         email = email,
-        password = password,
+        password = encodePassword,
         telephone = telephone,
         address = address,
-        profileImagePath = profileImagePath,
+        profileImagePath = userImagePath,
         releaseDate = releaseDate,
         birthdate = birthdate,
         gender = gender
     )
 
     is TherapistRequest -> Therapist(
+        companyId = companyId,
         name = name,
         email = email,
-        password = password,
+        password = encodePassword,
         telephone = telephone,
         address = address,
-        profileImagePath = profileImagePath,
+        profileImagePath = userImagePath,
         releaseDate = releaseDate,
         licenseNumber = licenseNumber
     )

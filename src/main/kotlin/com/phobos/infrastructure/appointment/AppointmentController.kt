@@ -13,6 +13,7 @@ import java.time.LocalDate
 class AppointmentController(
     private val getTherapistAppointmentsByDateRanges: GetTherapistAppointmentsByDateRanges,
     private val getPatientAppointmentsByDateRanges: GetPatientAppointmentsByDateRanges,
+    private val getCompanyAppointmentsByDateRanges: GetCompanyAppointmentsByDateRanges,
     private val getNextTherapistAppointments: GetNextTherapistAppointments,
     private val getNextPatientAppointments: GetNextPatientAppointments,
     private val createAppointment: CreateAppointment,
@@ -27,13 +28,11 @@ class AppointmentController(
         @RequestParam(value = "direction", defaultValue = "ASC") direction: String,
     ): ResponseEntity<List<AppointmentResponse>> {
 
-        val sortDirection = if (direction.uppercase() == "DESC") Sort.Direction.DESC else Sort.Direction.ASC
-        val sort = Sort.by(sortDirection, sortBy)
         val appointments = getTherapistAppointmentsByDateRanges.execute(
             therapistId,
             startDate.atStartOfDay(),
             endDate.atTime(23, 59, 59),
-            sort
+            getSort(direction, sortBy)
         )
 
         return ResponseEntity.ok(appointments.map { it.toResponse() })
@@ -48,13 +47,30 @@ class AppointmentController(
         @RequestParam(value = "direction", defaultValue = "ASC") direction: String,
     ): ResponseEntity<List<AppointmentResponse>> {
 
-        val sortDirection = if (direction.uppercase() == "DESC") Sort.Direction.DESC else Sort.Direction.ASC
-        val sort = Sort.by(sortDirection, sortBy)
         val appointments = getPatientAppointmentsByDateRanges.execute(
             patientId,
             startDate.atStartOfDay(),
             endDate.atTime(23, 59, 59),
-            sort
+            getSort(direction, sortBy)
+        )
+
+        return ResponseEntity.ok(appointments.map { it.toResponse() })
+    }
+
+    @GetMapping("/company")
+    fun getCompanyAppointments(
+        @RequestParam(value = "companyId") companyId: Int,
+        @RequestParam(value = "startDate") @DateTimeFormat(pattern = "yyyy-MM-dd") startDate: LocalDate,
+        @RequestParam(value = "endDate") @DateTimeFormat(pattern = "yyyy-MM-dd") endDate: LocalDate,
+        @RequestParam(value = "sortBy", defaultValue = "appointmentDate") sortBy: String,
+        @RequestParam(value = "direction", defaultValue = "ASC") direction: String,
+    ): ResponseEntity<List<AppointmentResponse>> {
+
+        val appointments = getCompanyAppointmentsByDateRanges.execute(
+            companyId,
+            startDate.atStartOfDay(),
+            endDate.atTime(23, 59, 59),
+            getSort(direction, sortBy)
         )
 
         return ResponseEntity.ok(appointments.map { it.toResponse() })
@@ -80,7 +96,6 @@ class AppointmentController(
         return ResponseEntity.ok(appointments.map { it.toResponse() })
     }
 
-
     @PostMapping
     fun createAppointment(@RequestBody appointmentRequest: AppointmentRequest): ResponseEntity<AppointmentResponse> {
 
@@ -93,6 +108,11 @@ class AppointmentController(
 
         deleteAppointment.execute(appointmentId)
         return ResponseEntity.ok().build()
+    }
+
+    private fun getSort(direction: String, sortBy: String): Sort {
+        val sortDirection = if (direction.uppercase() == "DESC") Sort.Direction.DESC else Sort.Direction.ASC
+        return Sort.by(sortDirection, sortBy)
     }
 
 }

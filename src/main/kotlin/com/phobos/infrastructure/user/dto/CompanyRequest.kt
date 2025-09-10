@@ -11,8 +11,9 @@ data class CompanyRequest(
     override val address: String,
     override val releaseDate: LocalDate = LocalDate.now(),
     override val id: Int,
+    override val companyId: Int = 0,
     override val profileImagePath: String?,
     override val telephone: String?,
     val companyAddress: String?,
-    val cif: String?
+    val cif: String?,
 ) : UserRequest()

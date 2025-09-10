@@ -11,7 +11,7 @@ interface JpaAppointmentRepository : JpaRepository<AppointmentEntity, Long> {
 
     @Query(
         """SELECT a FROM AppointmentEntity a 
-            WHERE a.therapistId = :therapistId 
+            WHERE a.therapist.id = :therapistId 
             AND a.appointmentDate BETWEEN :startDate AND :endDate"""
     )
     fun findAppointmentsByTherapistIdAndDateRange(
@@ -23,7 +23,7 @@ interface JpaAppointmentRepository : JpaRepository<AppointmentEntity, Long> {
 
     @Query(
         """SELECT a FROM AppointmentEntity a 
-            WHERE a.user.id = :patientId 
+            WHERE a.patient.id = :patientId 
             AND a.appointmentDate BETWEEN :startDate AND :endDate"""
     )
     fun findPatientAppointmentsWithDateRange(
@@ -34,8 +34,22 @@ interface JpaAppointmentRepository : JpaRepository<AppointmentEntity, Long> {
     ): List<AppointmentEntity>
 
     @Query(
+        """SELECT a FROM AppointmentEntity a 
+            JOIN UserCompanyEntity uc1 ON a.therapist.id = uc1.user.id
+            JOIN UserCompanyEntity uc2 ON a.patient.id = uc2.user.id
+            WHERE (uc1.company.id = :companyId OR uc2.company.id = :companyId)
+            AND a.appointmentDate BETWEEN :startDate AND :endDate"""
+    )
+    fun findCompanyAppointmentWithDateRange(
+        @Param("companyId") companyId: Int,
+        @Param("startDate") startDate: LocalDateTime,
+        @Param("endDate") endDate: LocalDateTime,
+        sort: Sort
+    ): List<AppointmentEntity>
+
+    @Query(
         """SELECT a FROM AppointmentEntity a
-            WHERE a.therapistId = :therapistId
+            WHERE a.therapist.id = :therapistId
                 AND a.appointmentDate > :now
             ORDER BY a.appointmentDate ASC"""
     )
@@ -47,7 +61,7 @@ interface JpaAppointmentRepository : JpaRepository<AppointmentEntity, Long> {
 
     @Query(
         """SELECT a FROM AppointmentEntity a
-            WHERE a.user.id = :patientId
+            WHERE a.patient.id = :patientId
                 AND a.appointmentDate > CURRENT_DATE
             ORDER BY a.appointmentDate ASC"""
     )
@@ -58,10 +72,10 @@ interface JpaAppointmentRepository : JpaRepository<AppointmentEntity, Long> {
 
     @Query(
         """
-        SELECT a.therapistId, COUNT(a) 
+        SELECT a.therapist.id, COUNT(a) 
         FROM AppointmentEntity a
-        WHERE a.therapistId IN :therapistsId AND a.appointmentDate > :now
-        GROUP BY a.therapistId
+        WHERE a.therapist.id IN :therapistsId AND a.appointmentDate > :now
+        GROUP BY a.therapist.id
     """
     )
     fun countAppointmentsGroupedByTherapist(

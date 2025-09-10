@@ -1,7 +1,8 @@
 package com.phobos.application.user
 
 import com.phobos.domain.user.UserRepository
-import com.phobos.infrastructure.user.dto.*
+import com.phobos.infrastructure.user.dto.UserRequest
+import com.phobos.infrastructure.user.dto.toDomain
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
@@ -21,20 +22,12 @@ class CreateUser(
     fun execute(request: UserRequest, userImage: MultipartFile?) {
         val passwordEncoder = BCryptPasswordEncoder()
         val userImagePath = storageImage(userImage)
-
-        when (request) {
-            is PatientRequest -> {
-                userRepository.savePatient(request.toDomain(userImagePath, passwordEncoder.encode(request.password)))
-            }
-
-            is TherapistRequest -> {
-                userRepository.saveTherapist(request.toDomain(userImagePath, passwordEncoder.encode(request.password)))
-            }
-
-            is CompanyRequest -> {
-                TODO()
-            }
-        }
+        userRepository.saveUser(
+            request.toDomain(
+                userImagePath,
+                passwordEncoder.encode(request.password)
+            )
+        )
     }
 
     private fun storageImage(image: MultipartFile?): String {

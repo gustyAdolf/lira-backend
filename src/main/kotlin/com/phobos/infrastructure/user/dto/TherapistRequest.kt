@@ -11,6 +11,7 @@ data class TherapistRequest(
     override val password: String,
     override val address: String,
     override val id: Int,
+    override val companyId: Int,
     override val profileImagePath: String?,
     override val telephone: String?,
     override val releaseDate: LocalDate?,
@@ -19,6 +20,7 @@ data class TherapistRequest(
 
 fun TherapistRequest.toDomain(imagePath: String?, encodePassword: String): Therapist {
     return Therapist(
+        companyId = companyId,
         name = name,
         email = email,
         password = encodePassword,
