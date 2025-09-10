@@ -2,6 +2,10 @@ package com.phobos.infrastructure.appointment
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.phobos.domain.appointment.Appointment
+import com.phobos.domain.mentaldisorder.MentalDisorder
+import com.phobos.domain.user.Patient
+import com.phobos.domain.user.Therapist
+import java.math.BigDecimal
 import java.time.LocalDateTime
 
 data class AppointmentRequest(
@@ -12,15 +16,22 @@ data class AppointmentRequest(
     val appointmentDate: LocalDateTime = LocalDateTime.now(),
     val appointmentDuration: Int,
     val description: String? = null,
+    val cost: BigDecimal = BigDecimal.ZERO,
+    val status: AppointmentStatus = AppointmentStatus.PENDING
 )
 
 fun AppointmentRequest.toDomain(): Appointment {
+    val therapist = Therapist(id = therapistId)
+    val patient = Patient(id = userId)
+    val mentalDisorder = MentalDisorder(id = mentalDisorderId)
     return Appointment(
-        therapistId = therapistId,
-        userId = userId,
-        mentalDisorderId = mentalDisorderId,
+        therapist = therapist,
+        patient = patient,
+        mentalDisorder = mentalDisorder,
         appointmentDate = appointmentDate,
         appointmentDuration = appointmentDuration,
-        description = description
+        description = description,
+        cost = cost,
+        status = status,
     )
 }

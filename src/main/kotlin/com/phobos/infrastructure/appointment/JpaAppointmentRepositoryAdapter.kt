@@ -3,6 +3,10 @@ package com.phobos.infrastructure.appointment
 import com.phobos.domain.appointment.Appointment
 import com.phobos.domain.appointment.AppointmentRepository
 import com.phobos.domain.appointment.toEntity
+import com.phobos.infrastructure.mentaldisorder.MentalDisorderEntity
+import com.phobos.infrastructure.user.TherapistEntity
+import com.phobos.infrastructure.user.entity.PatientEntity
+import jakarta.persistence.EntityManager
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
@@ -11,7 +15,8 @@ import java.time.LocalDateTime
 
 @Repository
 class JpaAppointmentRepositoryAdapter(
-    private val jpaAppointmentRepository: JpaAppointmentRepository
+    private val jpaAppointmentRepository: JpaAppointmentRepository,
+    private val entityManager: EntityManager
 ) : AppointmentRepository {
 
     override fun getTherapistAppointments(
@@ -38,6 +43,17 @@ class JpaAppointmentRepositoryAdapter(
         ).map { it.toDomain() }
     }
 
+    override fun getCompanyAppointments(
+        companyId: Int,
+        start: LocalDateTime,
+        end: LocalDateTime,
+        sort: Sort
+    ): List<Appointment> {
+        return jpaAppointmentRepository.findCompanyAppointmentWithDateRange(
+            companyId, start, end, sort
+        ).map { it.toDomain() }
+    }
+
     override fun findNextAppointmentsForTherapist(therapistId: Int, pageable: Pageable): List<Appointment> {
 
         val now = LocalDateTime.now()
@@ -52,7 +68,17 @@ class JpaAppointmentRepositoryAdapter(
     }
 
     override fun save(appointment: Appointment): Appointment {
-        val entity = appointment.toEntity()
+        val therapistRef = entityManager.getReference(TherapistEntity::class.java, appointment.therapist.id)
+        val patientRef = entityManager.getReference(PatientEntity::class.java, appointment.patient.id)
+        val mentalDisorderRef =
+            entityManager.getReference(MentalDisorderEntity::class.java, appointment.mentalDisorder.id)
+
+        val entity = appointment.toEntity(
+            therapistRef,
+            patientRef,
+            mentalDisorderRef
+        )
+
         return jpaAppointmentRepository.save(entity).toDomain()
     }
 

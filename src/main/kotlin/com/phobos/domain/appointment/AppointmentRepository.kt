@@ -20,6 +20,13 @@ interface AppointmentRepository {
         sort: Sort
     ): List<Appointment>
 
+    fun getCompanyAppointments(
+        companyId: Int,
+        start: LocalDateTime,
+        end: LocalDateTime,
+        sort: Sort
+    ): List<Appointment>
+
     fun findNextAppointmentsForTherapist(therapistId: Int, pageable: Pageable): List<Appointment>
 
     fun findNextAppointmentsForPatient(patientId: Int, size: Int): List<Appointment>

@@ -8,6 +8,7 @@ import java.time.LocalDate
 
 sealed class User {
     abstract val id: Int
+    abstract val companyId: Int
     abstract val userType: UserType
     abstract val name: String
     abstract val email: String

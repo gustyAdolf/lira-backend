@@ -29,13 +29,7 @@ class UserEntity(
     @Column(name = "release_date", nullable = false)
     val releaseDate: LocalDate = LocalDate.now(),
 
-//    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
-//    val userDisorders: List<UserDisorderEntity> = emptyList()
-) {
-    companion object {
-        fun withId(id: Int) = UserEntity(id = id)
-    }
-}
+    )
 
 fun UserEntity.toDomain(
     patientEntity: PatientEntity? = null,

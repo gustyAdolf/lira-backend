@@ -14,7 +14,7 @@ interface JpaUserRepository : JpaRepository<UserEntity, Int> {
     @Query(
         """
         SELECT u FROM UserEntity u
-        JOIN UserCompany uc ON u.id = uc.user.id
+        JOIN UserCompanyEntity uc ON u.id = uc.user.id
         WHERE uc.company.id = :companyId
           AND u.userType = 'THERAPIST'
     """

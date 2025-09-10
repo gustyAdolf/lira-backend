@@ -1,11 +1,11 @@
 package com.phobos.infrastructure.user.entity
 
 import com.phobos.domain.user.*
+import com.phobos.infrastructure.user.UserCompanyEntity
 import com.phobos.infrastructure.user.jpa.JpaCompanyRepository
 import com.phobos.infrastructure.user.jpa.JpaPatientRepository
 import com.phobos.infrastructure.user.jpa.JpaTherapistRepository
 import com.phobos.infrastructure.user.jpa.JpaUserRepository
-import com.phobos.infrastructure.user.toDomain
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Repository
@@ -15,7 +15,8 @@ class JpaUserRepositoryAdapter(
     private val jpaUserRepository: JpaUserRepository,
     private val jpaPatientRepository: JpaPatientRepository,
     private val jpaTherapistRepository: JpaTherapistRepository,
-    private val jpaCompanyRepository: JpaCompanyRepository
+    private val jpaCompanyRepository: JpaCompanyRepository,
+    private val jpaUserCompanyRepository: JpaUserCompanyRepository
 ) : UserRepository {
 
     override fun findById(id: Int): User? {
@@ -57,17 +58,34 @@ class JpaUserRepositoryAdapter(
         TODO("Not yet implemented")
     }
 
-    override fun savePatient(patient: Patient): Patient {
-        return jpaPatientRepository.save(patient.toEntity()).toDomain()
+    override fun saveUser(user: User) {
+        when (user) {
+            is Patient -> {
+                val patient = jpaPatientRepository.save(user.toEntity())
+                saveUserCompany(user.companyId, patient.user)
+            }
+
+            is Therapist -> {
+                val therapist = jpaTherapistRepository.save(user.toEntity())
+                saveUserCompany(user.companyId, therapist.user)
+            }
+
+            is Company -> TODO()
+        }
     }
 
-    override fun saveTherapist(therapist: Therapist): Therapist {
-        return jpaTherapistRepository.save(therapist.toEntity()).toDomain()
+    private fun saveUserCompany(companyId: Int, user: UserEntity) {
+        val companyRef = jpaCompanyRepository.getReferenceById(companyId)
+        jpaUserCompanyRepository.save(
+            UserCompanyEntity(
+                user = user,
+                company = companyRef
+            )
+        )
     }
-
 
     private fun convertToUserDomain(userEntity: UserEntity): User {
-        return when (userEntity.userType) {
+        when (userEntity.userType) {
             UserType.PATIENT -> {
                 val patientEntity = jpaPatientRepository.findById(userEntity.id).orElse(null)
                 return userEntity.toDomain(patientEntity = patientEntity)

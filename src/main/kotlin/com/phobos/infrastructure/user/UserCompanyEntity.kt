@@ -1,12 +1,12 @@
 package com.phobos.infrastructure.user
 
-import com.phobos.infrastructure.company.Company
+import com.phobos.infrastructure.user.entity.CompanyEntity
 import com.phobos.infrastructure.user.entity.UserEntity
 import jakarta.persistence.*
 
 @Entity
 @Table(name = "user_company")
-data class UserCompany(
+data class UserCompanyEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Int = 0,
@@ -17,5 +17,5 @@ data class UserCompany(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id", nullable = false)
-    val company: Company
+    val company: CompanyEntity
 )

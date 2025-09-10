@@ -13,15 +13,17 @@ class PatientRequest(
     override val address: String,
     override val releaseDate: LocalDate = LocalDate.now(),
     override val id: Int,
+    override val companyId: Int,
     override val profileImagePath: String?,
     override val telephone: String?,
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     val birthdate: LocalDate,
-    val gender: String,
+    val gender: String
 ) : UserRequest()
 
 fun PatientRequest.toDomain(imagePath: String?, encodePassword: String): Patient {
     return Patient(
+        companyId = companyId,
         name = name,
         email = email,
         password = encodePassword,
