@@ -1,6 +1,7 @@
 package com.phobos.infrastructure.user
 
 import com.phobos.infrastructure.company.Company
+import com.phobos.infrastructure.user.entity.UserEntity
 import jakarta.persistence.*
 
 @Entity

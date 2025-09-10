@@ -2,7 +2,7 @@ package com.phobos.domain.appointment
 
 import com.phobos.infrastructure.appointment.AppointmentEntity
 import com.phobos.infrastructure.mentaldisorder.MentalDisorderEntity
-import com.phobos.infrastructure.user.UserEntity
+import com.phobos.infrastructure.user.entity.UserEntity
 import java.time.LocalDateTime
 
 data class Appointment(
@@ -12,7 +12,7 @@ data class Appointment(
     val appointmentDuration: Int,
     val userId: Int,
     val name: String = "",
-    val imageUrl: String? = "",
+    val profileImagePath: String? = "",
     val telephone: String? = "",
     val email: String = "",
     val mentalDisorderId: Int,

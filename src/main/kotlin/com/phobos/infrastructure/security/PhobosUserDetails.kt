@@ -1,22 +1,23 @@
 package com.phobos.infrastructure.security
 
+import com.phobos.domain.user.Patient
 import com.phobos.domain.user.User
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
 
-class PhobosUserDetails(private val user: User) : UserDetails {
+class PhobosUserDetails(private val patient: User) : UserDetails {
 
     override fun getAuthorities(): List<SimpleGrantedAuthority> {
-        return listOf(SimpleGrantedAuthority(user.userType.name))
+        return listOf(SimpleGrantedAuthority(patient.userType.name))
     }
 
     override fun getPassword(): String {
-        return user.password
+        return patient.password
     }
 
     override fun getUsername(): String {
-        return user.email
+        return patient.email
     }
 
     override fun isAccountNonExpired(): Boolean {

@@ -1,8 +1,9 @@
 package com.phobos.infrastructure.user
 
 import com.phobos.application.user.ListTherapistByCompany
-import com.phobos.domain.user.User
-import com.phobos.infrastructure.user.dto.UserResponse
+import com.phobos.domain.user.Patient
+import com.phobos.domain.user.Therapist
+import com.phobos.infrastructure.user.dto.PatientResponse
 import com.phobos.infrastructure.user.dto.toResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -16,9 +17,10 @@ class TherapistController(
     private val listTherapistByCompany: ListTherapistByCompany
 ) {
     @GetMapping("/company/{companyId}")
-    fun getTherapistsByCompany(@PathVariable companyId: Int): ResponseEntity<List<UserResponse>> {
-        val therapists: List<User> = listTherapistByCompany.execute(companyId)
-        val response = therapists.map { it.toResponse() }
-        return ResponseEntity.ok(response)
+    fun getTherapistsByCompany(@PathVariable companyId: Int): ResponseEntity<List<PatientResponse>> {
+        val therapists: List<Therapist> = listTherapistByCompany.execute(companyId)
+        return TODO()
+//        val response = therapists.map { it.toResponse() }
+//        return ResponseEntity.ok(response)
     }
 }

@@ -1,6 +1,8 @@
 package com.phobos.infrastructure.user
 
 import com.phobos.infrastructure.mentaldisorder.MentalDisorderEntity
+import com.phobos.infrastructure.user.entity.PatientEntity
+import com.phobos.infrastructure.user.entity.UserEntity
 import jakarta.persistence.*
 
 @Entity
@@ -12,7 +14,7 @@ data class UserDisorderEntity(
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("userId")
     @JoinColumn(name = "user_id")
-    val user: UserEntity,
+    val patient: PatientEntity,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("mentalDisorderId")
