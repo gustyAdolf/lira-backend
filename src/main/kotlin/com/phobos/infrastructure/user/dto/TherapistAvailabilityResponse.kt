@@ -1,8 +1,8 @@
 package com.phobos.infrastructure.user.dto
 
 import com.phobos.domain.user.TherapistAvailability
-import com.phobos.infrastructure.appointment.AppointmentResponse
-import com.phobos.infrastructure.appointment.toResponse
+import com.phobos.infrastructure.appointment.dto.AppointmentResponse
+import com.phobos.infrastructure.appointment.dto.toResponse
 
 data class TherapistAvailabilityResponse(
     val therapistID: Int,

@@ -3,6 +3,7 @@ package com.phobos.infrastructure.appointment
 import com.phobos.domain.appointment.Appointment
 import com.phobos.domain.appointment.AppointmentRepository
 import com.phobos.domain.appointment.toEntity
+import com.phobos.domain.exceptions.AppointmentException
 import com.phobos.infrastructure.mentaldisorder.MentalDisorderEntity
 import com.phobos.infrastructure.user.TherapistEntity
 import com.phobos.infrastructure.user.entity.PatientEntity
@@ -82,8 +83,18 @@ class JpaAppointmentRepositoryAdapter(
         return jpaAppointmentRepository.save(entity).toDomain()
     }
 
+    override fun updateAppointmentStatus(
+        appointmentId: Int,
+        status: AppointmentStatus
+    ): Appointment {
+        val appointment =
+            jpaAppointmentRepository.findById(appointmentId).orElseThrow { AppointmentException.NoAppointmentExists() }
+        val updatedAppointment = appointment.copy(status = status)
+        return jpaAppointmentRepository.save(updatedAppointment).toDomain()
+    }
+
     override fun deleteById(id: Int) {
-        jpaAppointmentRepository.deleteById(id.toLong())
+        jpaAppointmentRepository.deleteById(id)
     }
 
     override fun countAppointmentsByTherapists(therapistsId: List<Int>, now: LocalDateTime): Map<Int, Int> {

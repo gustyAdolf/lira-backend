@@ -7,10 +7,10 @@ import com.phobos.infrastructure.checkin.dto.CheckinResponse
 import com.phobos.infrastructure.checkin.dto.CheckoutRequest
 import com.phobos.infrastructure.checkin.dto.NewCheckinRequest
 import com.phobos.infrastructure.rest.ApiResponse
+import com.phobos.infrastructure.rest.ApiResponseStatus
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.web.bind.annotation.*
 import java.time.LocalDate
-import java.util.UUID
 
 @RestController
 @RequestMapping("/checkins")
@@ -39,25 +39,25 @@ class CheckinController(
     @PostMapping("/checkin")
     fun checkinTherapist(@RequestBody checkinRequest: NewCheckinRequest): ApiResponse<Unit> {
         checkin.execute(checkinRequest)
-        return ApiResponse("success", "Check-in realizado correctamente")
+        return ApiResponse(ApiResponseStatus.SUCCESS, "Check-in realizado correctamente")
     }
 
     @PostMapping("/checkout")
     fun checkoutTherapist(@RequestBody checkoutRequest: CheckoutRequest): ApiResponse<Unit> {
         checkout.execute(checkoutRequest)
-        return ApiResponse("success", "Check-out realizado correctamente")
+        return ApiResponse(ApiResponseStatus.SUCCESS, "Check-out realizado correctamente")
     }
 
     @PutMapping
     fun updateCheckin(@RequestBody checkinRequest: CheckinRequest): ApiResponse<Unit> {
         updateCheckin.execute(checkinRequest)
-        return ApiResponse("success", "Check-in actualizado correctamente")
+        return ApiResponse(ApiResponseStatus.SUCCESS, "Check-in actualizado correctamente")
     }
 
     @DeleteMapping("/{checkinId}")
     fun deleteCheckin(@PathVariable checkinId: Int): ApiResponse<Unit> {
         deleteCheckin.execute(checkinId)
-        return ApiResponse("success", "Registro eliminado")
+        return ApiResponse(ApiResponseStatus.SUCCESS, "Registro eliminado")
     }
 
 }

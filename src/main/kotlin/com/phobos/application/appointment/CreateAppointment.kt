@@ -2,8 +2,8 @@ package com.phobos.application.appointment
 
 import com.phobos.domain.appointment.Appointment
 import com.phobos.domain.appointment.AppointmentRepository
-import com.phobos.infrastructure.appointment.AppointmentRequest
-import com.phobos.infrastructure.appointment.toDomain
+import com.phobos.infrastructure.appointment.dto.AppointmentRequest
+import com.phobos.infrastructure.appointment.dto.toDomain
 import org.springframework.stereotype.Service
 
 @Service

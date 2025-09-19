@@ -1,5 +1,6 @@
 package com.phobos.domain.appointment
 
+import com.phobos.infrastructure.appointment.AppointmentStatus
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import java.time.LocalDateTime
@@ -32,6 +33,8 @@ interface AppointmentRepository {
     fun findNextAppointmentsForPatient(patientId: Int, size: Int): List<Appointment>
 
     fun save(appointment: Appointment): Appointment
+
+    fun updateAppointmentStatus(appointmentId: Int, status: AppointmentStatus): Appointment
 
     fun deleteById(id: Int)
 
