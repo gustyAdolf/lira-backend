@@ -1,6 +1,12 @@
 package com.phobos.infrastructure.appointment
 
 import com.phobos.application.appointment.*
+import com.phobos.infrastructure.appointment.dto.AppointmentRequest
+import com.phobos.infrastructure.appointment.dto.AppointmentResponse
+import com.phobos.infrastructure.appointment.dto.UpdateAppointmentStatusRequest
+import com.phobos.infrastructure.appointment.dto.toResponse
+import com.phobos.infrastructure.rest.ApiResponse
+import com.phobos.infrastructure.rest.ApiResponseStatus
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.format.annotation.DateTimeFormat
@@ -17,6 +23,7 @@ class AppointmentController(
     private val getNextTherapistAppointments: GetNextTherapistAppointments,
     private val getNextPatientAppointments: GetNextPatientAppointments,
     private val createAppointment: CreateAppointment,
+    private val updateAppointmentStatus: UpdateAppointmentStatus,
     private val deleteAppointment: DeleteAppointment
 ) {
     @GetMapping
@@ -101,6 +108,15 @@ class AppointmentController(
 
         val createdAppointment = createAppointment.execute(appointmentRequest)
         return ResponseEntity.ok(createdAppointment.toResponse())
+    }
+
+    @PatchMapping("/{appointmentId}/status")
+    fun updateAppointmentStatus(
+        @PathVariable appointmentId: Int,
+        @RequestBody appointmentStatusUpdateRequest: UpdateAppointmentStatusRequest
+    ): ApiResponse<AppointmentResponse> {
+        val response = updateAppointmentStatus.execute(appointmentId, appointmentStatusUpdateRequest).toResponse()
+        return ApiResponse(ApiResponseStatus.SUCCESS, "Estado actualizado correctamente", response)
     }
 
     @DeleteMapping("/{appointmentId}")

@@ -1,10 +1,11 @@
-package com.phobos.infrastructure.appointment
+package com.phobos.infrastructure.appointment.dto
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.phobos.domain.appointment.Appointment
 import com.phobos.domain.mentaldisorder.MentalDisorder
 import com.phobos.domain.user.Patient
 import com.phobos.domain.user.Therapist
+import com.phobos.infrastructure.appointment.AppointmentStatus
 import java.math.BigDecimal
 import java.time.LocalDateTime
 

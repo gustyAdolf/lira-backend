@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import java.time.LocalDateTime
 
-interface JpaAppointmentRepository : JpaRepository<AppointmentEntity, Long> {
+interface JpaAppointmentRepository : JpaRepository<AppointmentEntity, Int> {
 
     @Query(
         """SELECT a FROM AppointmentEntity a 

@@ -1,7 +1,8 @@
-package com.phobos.infrastructure.appointment
+package com.phobos.infrastructure.appointment.dto
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.phobos.domain.appointment.Appointment
+import com.phobos.infrastructure.appointment.AppointmentStatus
 import com.phobos.infrastructure.mentaldisorder.MentalDisorderResponse
 import com.phobos.infrastructure.mentaldisorder.toResponse
 import com.phobos.infrastructure.user.dto.PatientResponse

@@ -12,4 +12,9 @@ class Configuration : WebMvcConfigurer {
             .allowedMethods("GET", "POST", "PUT", "DELETE") // Métodos permitidos
             .allowCredentials(true); // Permitir credenciales (cookies, tokens, etc.)
     }
+
+    override fun addResourceHandlers(registry: org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry) {
+        registry.addResourceHandler("/images/users/**")
+            .addResourceLocations("file:/phobos/images/users/")
+    }
 }
