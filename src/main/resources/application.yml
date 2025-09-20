@@ -19,12 +19,14 @@ spring:
 
   datasource:
     # Local host
-    #    url: jdbc:postgresql://localhost:5432/phobosdb
-
+#    url: jdbc:postgresql://localhost:5432/phobosdb
     # Mac db
-    url: jdbc:postgresql://192.168.1.25:5432/phobosdb
+#    url: jdbc:postgresql://192.168.1.25:5432/phobosdb
     # AWS db
 #    url: jdbc:postgresql://13.50.156.119:5432/phobosdb
+
+    # Docker net
+    url: jdbc:postgresql://phobos_db:5432/phobosdb
     username: phobos
     password: Ph0bo$
     hikari:
@@ -33,7 +35,8 @@ spring:
   web:
     resources:
       static-locations:
-        - file:/phobos/
+        - file:/Users/gusty/Documents/phobos/
+
 user:
   image:
     path: /phobos/images/users/
