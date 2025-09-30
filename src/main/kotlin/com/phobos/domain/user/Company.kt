@@ -20,18 +20,16 @@ data class Company(
 ) : User()
 
 fun Company.toEntity(): CompanyEntity {
-    val user = UserEntity(
-        name = name,
-        email = email,
-        password = password,
-        profileImagePath = profileImagePath,
-        telephone = telephone,
-        address = address,
-        userType = userType
-    )
     return CompanyEntity(
         companyAddress = companyAddress,
-        cif = cif,
-        user = user,
-    )
+        cif = cif
+    ).apply {
+        this.name = this@toEntity.name
+        this.email = this@toEntity.email
+        this.password = this@toEntity.password
+        this.profileImagePath = this@toEntity.profileImagePath
+        this.telephone = this@toEntity.telephone
+        this.address = this@toEntity.address
+        this.userType = this@toEntity.userType
+    }
 }

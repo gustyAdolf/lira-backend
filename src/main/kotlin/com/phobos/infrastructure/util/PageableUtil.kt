@@ -16,4 +16,9 @@ object PageableUtil {
         }
         return PageRequest.of(page, size, Sort.by(sortDirection, sortField))
     }
+
+    fun getSort(direction: String, sortBy: String): Sort {
+        val sortDirection = if (direction.uppercase() == "DESC") Sort.Direction.DESC else Sort.Direction.ASC
+        return Sort.by(sortDirection, sortBy)
+    }
 }

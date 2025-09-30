@@ -5,7 +5,7 @@ import com.phobos.domain.appointment.AppointmentRepository
 import com.phobos.domain.appointment.toEntity
 import com.phobos.domain.exceptions.AppointmentException
 import com.phobos.infrastructure.mentaldisorder.MentalDisorderEntity
-import com.phobos.infrastructure.user.TherapistEntity
+import com.phobos.infrastructure.user.entity.TherapistEntity
 import com.phobos.infrastructure.user.entity.PatientEntity
 import jakarta.persistence.EntityManager
 import org.springframework.data.domain.PageRequest

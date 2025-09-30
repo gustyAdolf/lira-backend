@@ -2,42 +2,38 @@ package com.phobos.infrastructure.user.entity
 
 import com.phobos.domain.user.*
 import com.phobos.infrastructure.mentaldisorder.toDomain
-import com.phobos.infrastructure.user.TherapistEntity
 import jakarta.persistence.*
 import java.time.LocalDate
 
 @Entity
 @Table(name = "users")
-class UserEntity(
+@Inheritance(strategy = InheritanceType.JOINED)
+open class UserEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Int = 0,
+    open var id: Int = 0,
 
-    val email: String = "",
-    val password: String = "",
-    val name: String = "",
+    open var email: String = "",
+    open var password: String = "",
+    open var name: String = "",
 
     @Column(name = "profile_img_path")
-    val profileImagePath: String? = null,
-    val telephone: String? = null,
-    val address: String? = null,
+    open var profileImagePath: String? = null,
+    open var telephone: String? = null,
+    open var address: String? = null,
 
     @Enumerated(EnumType.STRING)
     @Column(name = "user_type", nullable = false)
-    val userType: UserType = UserType.PATIENT,
+    open var userType: UserType = UserType.PATIENT,
 
     @Column(name = "release_date", nullable = false)
-    val releaseDate: LocalDate = LocalDate.now(),
+    open var releaseDate: LocalDate = LocalDate.now(),
 
     )
 
-fun UserEntity.toDomain(
-    patientEntity: PatientEntity? = null,
-    therapistEntity: TherapistEntity? = null,
-    companyEntity: CompanyEntity? = null
-): User =
-    when (this.userType) {
-        UserType.PATIENT -> Patient(
+fun UserEntity.toDomain(): User =
+    when (this) {
+        is PatientEntity -> Patient(
             id = this.id,
             email = this.email,
             name = this.name,
@@ -46,14 +42,12 @@ fun UserEntity.toDomain(
             telephone = this.telephone,
             address = this.address,
             releaseDate = this.releaseDate,
-            birthdate = patientEntity?.birthdate,
-            gender = patientEntity?.gender,
-            mentalDisorders = patientEntity?.userDisorders
-                ?.map { it.mentalDisorder.toDomain() }
-                ?: emptyList()
+            birthdate = this.birthdate,
+            gender = this.gender,
+            mentalDisorders = this.userDisorders.map { it.mentalDisorder.toDomain() }
         )
 
-        UserType.THERAPIST -> Therapist(
+        is TherapistEntity -> Therapist(
             id = this.id,
             email = this.email,
             name = this.name,
@@ -62,10 +56,10 @@ fun UserEntity.toDomain(
             telephone = this.telephone,
             address = this.address,
             releaseDate = this.releaseDate,
-            licenseNumber = therapistEntity?.licenseNumber
+            licenseNumber = this.licenseNumber
         )
 
-        UserType.COMPANY -> Company(
+        is CompanyEntity -> Company(
             id = this.id,
             email = this.email,
             name = this.name,
@@ -74,7 +68,9 @@ fun UserEntity.toDomain(
             telephone = this.telephone,
             address = this.address,
             releaseDate = this.releaseDate,
-            cif = companyEntity?.cif,
-            companyAddress = companyEntity?.address
+            cif = this.cif,
+            companyAddress = this.companyAddress
         )
+
+        else -> error("Tipo de usuario no soportado: ${this::class.simpleName}")
     }

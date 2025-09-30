@@ -5,7 +5,9 @@ import com.phobos.domain.emotionentry.EmotionEntryRepository
 import com.phobos.domain.emotionentry.toEntity
 import com.phobos.infrastructure.user.entity.PatientEntity
 import jakarta.persistence.EntityManager
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Repository
+import java.time.LocalDateTime
 
 @Repository
 class JpaEmotionEntryAdapter(
@@ -18,7 +20,12 @@ class JpaEmotionEntryAdapter(
         jpaEmotionRepository.save(emotion.toEntity(patientEntity))
     }
 
-    override fun findByUserId(userId: Int): List<EmotionEntry> {
-        return jpaEmotionRepository.findByUserId(userId).map { it.toDomain() }
+    override fun findByUserId(
+        userId: Int,
+        startDate: LocalDateTime,
+        endDate: LocalDateTime,
+        sort: Sort
+    ): List<EmotionEntry> {
+        return jpaEmotionRepository.findByUserId(userId, startDate, endDate, sort).map { it.toDomain() }
     }
 }

@@ -6,7 +6,7 @@ import com.phobos.domain.user.Therapist
 import com.phobos.infrastructure.appointment.AppointmentEntity
 import com.phobos.infrastructure.appointment.AppointmentStatus
 import com.phobos.infrastructure.mentaldisorder.MentalDisorderEntity
-import com.phobos.infrastructure.user.TherapistEntity
+import com.phobos.infrastructure.user.entity.TherapistEntity
 import com.phobos.infrastructure.user.entity.PatientEntity
 import java.math.BigDecimal
 import java.time.LocalDateTime
