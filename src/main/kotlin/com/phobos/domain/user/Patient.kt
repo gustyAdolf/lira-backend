@@ -2,7 +2,6 @@ package com.phobos.domain.user
 
 import com.phobos.domain.mentaldisorder.MentalDisorder
 import com.phobos.infrastructure.user.entity.PatientEntity
-import com.phobos.infrastructure.user.entity.UserEntity
 import java.time.LocalDate
 
 data class Patient(
@@ -22,18 +21,16 @@ data class Patient(
 ) : User()
 
 fun Patient.toEntity(): PatientEntity {
-    val user = UserEntity(
-        name = name,
-        email = email,
-        password = password,
-        profileImagePath = profileImagePath,
-        telephone = telephone,
-        address = address,
-        userType = UserType.PATIENT
-    )
     return PatientEntity(
         birthdate = birthdate,
-        gender = gender,
-        user = user
-    )
+        gender = gender
+    ).apply {
+        this.name = this@toEntity.name
+        this.email = this@toEntity.email
+        this.password = this@toEntity.password
+        this.profileImagePath = this@toEntity.profileImagePath
+        this.telephone = this@toEntity.telephone
+        this.address = this@toEntity.address
+        this.userType = this@toEntity.userType
+    }
 }

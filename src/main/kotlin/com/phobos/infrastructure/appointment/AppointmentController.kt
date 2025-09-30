@@ -7,6 +7,7 @@ import com.phobos.infrastructure.appointment.dto.UpdateAppointmentStatusRequest
 import com.phobos.infrastructure.appointment.dto.toResponse
 import com.phobos.infrastructure.rest.ApiResponse
 import com.phobos.infrastructure.rest.ApiResponseStatus
+import com.phobos.infrastructure.util.PageableUtil
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.format.annotation.DateTimeFormat
@@ -39,7 +40,7 @@ class AppointmentController(
             therapistId,
             startDate.atStartOfDay(),
             endDate.atTime(23, 59, 59),
-            getSort(direction, sortBy)
+            PageableUtil.getSort(direction, sortBy)
         )
 
         return ResponseEntity.ok(appointments.map { it.toResponse() })
@@ -58,7 +59,7 @@ class AppointmentController(
             patientId,
             startDate.atStartOfDay(),
             endDate.atTime(23, 59, 59),
-            getSort(direction, sortBy)
+            PageableUtil.getSort(direction, sortBy)
         )
 
         return ResponseEntity.ok(appointments.map { it.toResponse() })
@@ -77,7 +78,7 @@ class AppointmentController(
             companyId,
             startDate.atStartOfDay(),
             endDate.atTime(23, 59, 59),
-            getSort(direction, sortBy)
+            PageableUtil.getSort(direction, sortBy)
         )
 
         return ResponseEntity.ok(appointments.map { it.toResponse() })
@@ -124,11 +125,6 @@ class AppointmentController(
 
         deleteAppointment.execute(appointmentId)
         return ResponseEntity.ok().build()
-    }
-
-    private fun getSort(direction: String, sortBy: String): Sort {
-        val sortDirection = if (direction.uppercase() == "DESC") Sort.Direction.DESC else Sort.Direction.ASC
-        return Sort.by(sortDirection, sortBy)
     }
 
 }

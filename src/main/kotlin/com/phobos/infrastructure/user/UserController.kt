@@ -4,6 +4,7 @@ import com.phobos.application.user.CreateUser
 import com.phobos.application.user.GetUserMentalDisorder
 import com.phobos.application.user.GetUsers
 import com.phobos.application.user.UserQueryService
+import com.phobos.domain.user.UserType
 import com.phobos.domain.user.toResponse
 import com.phobos.infrastructure.mentaldisorder.MentalDisorderResponse
 import com.phobos.infrastructure.mentaldisorder.toResponse
@@ -34,12 +35,13 @@ class UserController(
     fun getAllUsers(
         @RequestParam(required = false) name: String?,
         @RequestParam(required = false) mentalDisorder: String?,
+        @RequestParam(required = false) userType: UserQueryType = UserQueryType.PATIENT,
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "10") size: Int,
         @RequestParam(defaultValue = "name,asc") sort: String,
     ): ResponseEntity<Page<UserResponse>> {
         val pageable: Pageable = PageableUtil.getPageableFrom(page, size, sort)
-        val userPage = getUsers.execute(name, mentalDisorder, pageable)
+        val userPage = getUsers.execute(name, mentalDisorder, userType, pageable)
         return ResponseEntity.ok(userPage.map { it.toResponse() })
     }
 

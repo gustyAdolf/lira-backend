@@ -3,10 +3,9 @@ package com.phobos.infrastructure.appointment
 import com.phobos.domain.appointment.Appointment
 import com.phobos.infrastructure.mentaldisorder.MentalDisorderEntity
 import com.phobos.infrastructure.mentaldisorder.toDomain
-import com.phobos.infrastructure.user.TherapistEntity
+import com.phobos.infrastructure.user.entity.TherapistEntity
 import com.phobos.infrastructure.user.entity.PatientEntity
 import com.phobos.infrastructure.user.entity.toDomain
-import com.phobos.infrastructure.user.toDomain
 import jakarta.persistence.*
 import java.math.BigDecimal
 import java.time.LocalDateTime

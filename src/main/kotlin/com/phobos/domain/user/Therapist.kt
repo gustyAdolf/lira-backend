@@ -1,7 +1,6 @@
 package com.phobos.domain.user
 
-import com.phobos.infrastructure.user.TherapistEntity
-import com.phobos.infrastructure.user.entity.UserEntity
+import com.phobos.infrastructure.user.entity.TherapistEntity
 import java.time.LocalDate
 
 data class Therapist(
@@ -19,17 +18,15 @@ data class Therapist(
 ) : User()
 
 fun Therapist.toEntity(): TherapistEntity {
-    val user = UserEntity(
-        name = name,
-        email = email,
-        password = password,
-        profileImagePath = profileImagePath,
-        telephone = telephone,
-        address = address,
-        userType = userType
-    )
     return TherapistEntity(
-        licenseNumber = licenseNumber,
-        user = user
-    )
+        licenseNumber = licenseNumber
+    ).apply {
+        this.name = this@toEntity.name
+        this.email = this@toEntity.email
+        this.password = this@toEntity.password
+        this.profileImagePath = this@toEntity.profileImagePath
+        this.telephone = this@toEntity.telephone
+        this.address = this@toEntity.address
+        this.userType = this@toEntity.userType
+    }
 }

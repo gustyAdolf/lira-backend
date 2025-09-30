@@ -2,6 +2,7 @@ package com.phobos.infrastructure.user.entity
 
 import com.phobos.domain.user.*
 import com.phobos.infrastructure.user.UserCompanyEntity
+import com.phobos.infrastructure.user.UserQueryType
 import com.phobos.infrastructure.user.jpa.JpaCompanyRepository
 import com.phobos.infrastructure.user.jpa.JpaPatientRepository
 import com.phobos.infrastructure.user.jpa.JpaTherapistRepository
@@ -20,8 +21,7 @@ class JpaUserRepositoryAdapter(
 ) : UserRepository {
 
     override fun findById(id: Int): User? {
-        val userEntity = jpaUserRepository.findById(id).orElse(null) ?: return null
-        return convertToUserDomain(userEntity)
+        return jpaUserRepository.findById(id).orElse(null).toDomain()
     }
 
     override fun findTherapistsByCompanyId(companyId: Int): List<Therapist> {
@@ -32,24 +32,45 @@ class JpaUserRepositoryAdapter(
     override fun findByEmail(email: String): User? {
         val user = jpaUserRepository.findByEmail(email)
         user?.let {
-            return convertToUserDomain(it)
+            return it.toDomain()
         }
         throw Exception("Usuario no encontrado") // TODO exception
     }
 
-    override fun findUsers(name: String?, mentalDisorder: String?, pageable: Pageable): Page<User> {
+    override fun findUsers(
+        name: String?,
+        mentalDisorder: String?,
+        userType: UserQueryType,
+        pageable: Pageable
+    ): Page<User> {
         val result = when {
             name != null && mentalDisorder != null ->
-                jpaUserRepository.findByNameContainingIgnoreCaseAndMentalDisorderName(name, mentalDisorder, pageable)
+                jpaUserRepository.findByNameContainingIgnoreCaseAndMentalDisorderName(
+                    name,
+                    mentalDisorder,
+                    pageable
+                )
 
             name != null ->
-                jpaUserRepository.findByNameContainingIgnoreCase(name, pageable)
+                if (UserQueryType.ALL == userType) jpaUserRepository.findByNameContainingIgnoreCaseAndUserType(
+                    name,
+                    null,
+                    pageable
+                )
+                else jpaUserRepository.findByNameContainingIgnoreCaseAndUserType(
+                    name,
+                    userType.toUserEntityType(),
+                    pageable
+                )
 
             mentalDisorder != null ->
                 jpaUserRepository.findByMentalDisorderName(mentalDisorder, pageable)
 
             else ->
-                jpaUserRepository.findAll(pageable)
+                if (UserQueryType.ALL == userType) jpaUserRepository.findAll(pageable)
+                else jpaUserRepository.findAllByUserType(userType.toUserEntityType(), pageable)
+
+
         }
         return result.map { it.toDomain() }
     }
@@ -62,12 +83,12 @@ class JpaUserRepositoryAdapter(
         when (user) {
             is Patient -> {
                 val patient = jpaPatientRepository.save(user.toEntity())
-                saveUserCompany(user.companyId, patient.user)
+                saveUserCompany(user.companyId, patient)
             }
 
             is Therapist -> {
                 val therapist = jpaTherapistRepository.save(user.toEntity())
-                saveUserCompany(user.companyId, therapist.user)
+                saveUserCompany(user.companyId, therapist)
             }
 
             is Company -> TODO()
@@ -82,24 +103,5 @@ class JpaUserRepositoryAdapter(
                 company = companyRef
             )
         )
-    }
-
-    private fun convertToUserDomain(userEntity: UserEntity): User {
-        when (userEntity.userType) {
-            UserType.PATIENT -> {
-                val patientEntity = jpaPatientRepository.findById(userEntity.id).orElse(null)
-                return userEntity.toDomain(patientEntity = patientEntity)
-            }
-
-            UserType.THERAPIST -> {
-                val therapistEntity = jpaTherapistRepository.findById(userEntity.id).orElse(null)
-                return userEntity.toDomain(therapistEntity = therapistEntity)
-            }
-
-            UserType.COMPANY -> {
-                val companyEntity = jpaCompanyRepository.findById(userEntity.id).orElse(null)
-                return userEntity.toDomain(companyEntity = companyEntity)
-            }
-        }
     }
 }
