@@ -34,7 +34,7 @@ class CreateUser(
         if (image == null) {
             return "${preffixImageName}default.png"
         }
-        val filename = "${UUID.randomUUID()}_${image.originalFilename}"
+        val filename = "${UUID.randomUUID()}_${image.originalFilename?.take(6)}"
         val path = Paths.get(imagePath, filename)
         Files.copy(image.inputStream, path)
         return preffixImageName + filename
