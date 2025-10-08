@@ -1,17 +1,15 @@
-version: "3.8"
-
 services:
-  phobos-api:
+  lira-api:
     build:
       context: ..
       dockerfile: Dockerfile
-    container_name: phobos-api
+    container_name: lira-api
     ports:
       - "8081:8081"
     networks:
       - phobos_net
     volumes:
-      - /Users/gusty/Documents/phobos/images/users:/phobos/images/users
+      - /Users/gusty/Documents/lira/images/users:/lira/images/users
 
 networks:
   phobos_net:
