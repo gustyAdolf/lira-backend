@@ -8,11 +8,11 @@
         <version>3.2.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.phobos</groupId>
-    <artifactId>phobos</artifactId>
+    <groupId>com.lira</groupId>
+    <artifactId>lira</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>phobos</name>
-    <description>Phobos web service</description>
+    <name>lira</name>
+    <description>Lira web service</description>
     <properties>
         <java.version>17</java.version>
         <kotlin.version>1.9.23</kotlin.version>
@@ -83,6 +83,12 @@
             <artifactId>jaxb-runtime</artifactId>
             <version>2.3.1</version>
         </dependency>
+        <dependency>
+            <groupId>com.google.firebase</groupId>
+            <artifactId>firebase-admin</artifactId>
+            <version>9.2.0</version>
+        </dependency>
+
     </dependencies>
 
     <build>

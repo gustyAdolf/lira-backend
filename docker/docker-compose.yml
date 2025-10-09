@@ -1,0 +1,18 @@
+services:
+  lira-api:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    container_name: lira-api
+    ports:
+      - "8081:8081"
+    networks:
+      - phobos_net
+    volumes:
+      - /Users/gusty/Documents/lira/images/users:/lira/images/users
+
+networks:
+  phobos_net:
+    external: true
+
+# para lanzarlo -> docker-compose up --build
