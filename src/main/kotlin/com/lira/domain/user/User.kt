@@ -1,0 +1,57 @@
+package com.lira.domain.user
+
+import com.lira.infrastructure.user.dto.CompanyResponse
+import com.lira.infrastructure.user.dto.PatientResponse
+import com.lira.infrastructure.user.dto.TherapistResponse
+import com.lira.infrastructure.user.dto.UserResponse
+import java.time.LocalDate
+
+sealed class User {
+    abstract val id: Int
+    abstract val companyId: Int
+    abstract val userType: UserType
+    abstract val name: String
+    abstract val email: String
+    abstract val password: String
+    abstract val profileImagePath: String?
+    abstract val telephone: String?
+    abstract val address: String?
+    abstract val releaseDate: LocalDate?
+}
+
+fun User.toResponse(): UserResponse = when (this) {
+    is Patient -> PatientResponse(
+        id = id,
+        name = name,
+        email = email,
+        profileImagePath = profileImagePath,
+        releaseDate = releaseDate,
+        telephone = telephone,
+        address = address,
+        birthdate = birthdate,
+        gender = gender,
+    )
+
+    is Therapist -> TherapistResponse(
+        id = id,
+        name = name,
+        email = email,
+        profileImagePath = profileImagePath,
+        releaseDate = releaseDate,
+        telephone = telephone,
+        address = address,
+        licenseNumber = licenseNumber
+    )
+
+    is Company -> CompanyResponse(
+        id = id,
+        name = name,
+        email = email,
+        profileImagePath = profileImagePath,
+        releaseDate = releaseDate,
+        telephone = telephone,
+        address = address,
+        companyAddress = companyAddress,
+        cif = cif
+    )
+}
