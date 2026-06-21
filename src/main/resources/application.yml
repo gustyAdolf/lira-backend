@@ -21,15 +21,15 @@ spring:
     # Local host
 #    url: jdbc:postgresql://localhost:5432/phobosdb
     # Mac db
-    url: jdbc:postgresql://192.168.1.16:5432/liradb
+    url: jdbc:postgresql://192.168.4.42:5432/liradb
     # AWS db
 #    url: jdbc:postgresql://13.50.156.119:5432/phobosdb
 
     # Docker net
 #    url: jdbc:postgresql://phobos_db:5432/phobosdb
 
-    username: phobos
-    password: Ph0bo$
+    username: lira
+    password: L1ra
     hikari:
       connection-timeout: 30000
       max-lifetime: 18000000

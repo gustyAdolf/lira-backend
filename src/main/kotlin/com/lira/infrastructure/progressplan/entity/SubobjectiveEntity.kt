@@ -1,0 +1,55 @@
+package com.lira.infrastructure.progressplan.entity
+
+import com.lira.domain.progressplan.Subobjective
+import jakarta.persistence.*
+import java.time.LocalDateTime
+
+@Entity
+@Table(name = "subobjectives")
+class SubobjectiveEntity(
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Int = 0,
+
+    @Column(name = "title")
+    val title: String,
+
+    @Column(name = "description")
+    val description: String?,
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type")
+    val type: SubobjectiveType,
+
+    @Column(name = "target_value")
+    val targetValue: Int?,
+
+    @Column(name = "target_success")
+    val targetSuccess: Int?,
+
+    @Column(name = "target_fail")
+    val targetFail: Int?,
+
+    @Column(name = "current_progress")
+    val currentProgress: Double,
+
+    @Column(name = "created_at")
+    val createdAt: LocalDateTime = LocalDateTime.now()
+) {
+    @ManyToOne
+    @JoinColumn(name = "objective_id", nullable = false)
+    lateinit var objective: ObjectiveEntity
+}
+
+fun SubobjectiveEntity.toDomain(): Subobjective =
+    Subobjective(
+        id = id,
+        title = title,
+        description = description,
+        type = type,
+        targetValue = targetValue,
+        targetSuccess = targetSuccess,
+        targetFail = targetFail,
+        currentProgress = currentProgress,
+        createdAt = createdAt
+    )
