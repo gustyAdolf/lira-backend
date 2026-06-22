@@ -2,8 +2,9 @@ package com.lira.infrastructure.progressplan
 
 import com.lira.domain.progressplan.*
 import com.lira.infrastructure.progressplan.entity.ObjectiveEntity
-import com.lira.infrastructure.progressplan.entity.SubobjectiveEntry
+import com.lira.infrastructure.progressplan.entity.SubobjectiveEntryEntity
 import com.lira.infrastructure.progressplan.entity.toDomain
+import com.lira.infrastructure.progressplan.entity.toEntity
 import com.lira.infrastructure.progressplan.jpa.JpaObjectiveRepository
 import com.lira.infrastructure.progressplan.jpa.JpaProgressPlanRepository
 import com.lira.infrastructure.progressplan.jpa.JpaSubobjectiveEntryRepository
@@ -35,6 +36,10 @@ class JpaProgressPlanAdapter(
         return jpaProgressPlanRepository.findAllByPatientIdAndTherapistId(patientId, therapistId).map { it.toDomain() }
     }
 
+    override fun getProgressPlansByPatientId(patientId: Int): List<ProgressPlan> {
+        return jpaProgressPlanRepository.findAllByPatientId(patientId).map { it.toDomain() }
+    }
+
 
     override fun getProgressPlanBySubobjectiveId(subobjectiveId: Int): ProgressPlan {
         return jpaSubobjectiveRepository.findById(subobjectiveId)
@@ -57,7 +62,7 @@ class JpaProgressPlanAdapter(
     }
 
     override fun saveSubobjectiveEntry(subobjectiveEntry: SubobjectiveEntry) {
-        jpaSubobjectiveEntryRepository.save(subobjectiveEntry)
+        jpaSubobjectiveEntryRepository.save(subobjectiveEntry.toEntity())
     }
 
     override fun saveSubobjective(subobjective: Subobjective, objectiveId: Int) {

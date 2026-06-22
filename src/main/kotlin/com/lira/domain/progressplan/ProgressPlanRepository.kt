@@ -1,11 +1,12 @@
 package com.lira.domain.progressplan
 
-import com.lira.infrastructure.progressplan.entity.SubobjectiveEntry
+import com.lira.domain.progressplan.SubobjectiveEntry
 
 interface ProgressPlanRepository {
     fun save(progressPlan: ProgressPlan)
 
     fun getProgressPlanByPatientId(patientId: Int, therapistId: Int): List<ProgressPlan>
+    fun getProgressPlansByPatientId(patientId: Int): List<ProgressPlan>
 
     fun getProgressPlanBySubobjectiveId(subobjectiveId: Int): ProgressPlan
 
