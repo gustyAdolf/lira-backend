@@ -3,6 +3,9 @@ package com.lira.infrastructure.rest
 import com.lira.domain.exceptions.AppointmentException
 import com.lira.domain.exceptions.CheckinException
 import org.springframework.http.HttpStatus
+import org.springframework.security.access.AccessDeniedException
+import org.springframework.security.authentication.BadCredentialsException
+import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestControllerAdvice
@@ -24,6 +27,16 @@ class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     fun handlerNoOpenCheckin(e: CheckinException.NoOpenCheckinException) =
         ApiResponse<Unit>(ApiResponseStatus.FAILURE, e.message ?: "No hay check-in abierto")
+
+    @ExceptionHandler(BadCredentialsException::class, UsernameNotFoundException::class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    fun handleAuthError(e: Exception) =
+        ApiResponse<Unit>(ApiResponseStatus.FAILURE, "Credenciales incorrectas")
+
+    @ExceptionHandler(AccessDeniedException::class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    fun handleAccessDenied(e: AccessDeniedException) =
+        ApiResponse<Unit>(ApiResponseStatus.FAILURE, "Acceso denegado")
 
     @ExceptionHandler(Exception::class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

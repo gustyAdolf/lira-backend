@@ -1,6 +1,6 @@
 package com.lira.domain.user
 
-import com.lira.infrastructure.user.UserQueryType
+import com.lira.domain.user.UserQueryType
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 

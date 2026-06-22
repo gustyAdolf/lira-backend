@@ -2,7 +2,7 @@ package com.lira.application.user
 
 import com.lira.domain.user.User
 import com.lira.domain.user.UserRepository
-import com.lira.infrastructure.user.UserQueryType
+import com.lira.domain.user.UserQueryType
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service

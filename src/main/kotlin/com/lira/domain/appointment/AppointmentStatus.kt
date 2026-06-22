@@ -1,4 +1,4 @@
-package com.lira.infrastructure.appointment
+package com.lira.domain.appointment
 
 enum class AppointmentStatus {
     PENDING,

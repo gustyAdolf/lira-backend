@@ -1,7 +1,7 @@
 package com.lira.infrastructure.progressplan.entity
 
+import com.lira.domain.progressplan.Objective
 import com.lira.domain.progressplan.ProgressPlan
-import com.lira.infrastructure.progressplan.dto.ObjectiveRequest
 import com.lira.infrastructure.user.entity.PatientEntity
 import com.lira.infrastructure.user.entity.TherapistEntity
 import com.lira.infrastructure.user.entity.toDomain
@@ -53,6 +53,40 @@ fun ProgressPlanEntity.toDomain(): ProgressPlan =
         objectives = this.objectives.map(ObjectiveEntity::toDomain),
         createdAt = this.createdAt,
         updatedAt = this.updatedAt
+    )
+
+fun ProgressPlan.toEntity(
+    patientEntity: PatientEntity,
+    therapistEntity: TherapistEntity
+): ProgressPlanEntity {
+    val planEntity = ProgressPlanEntity(
+        id = id,
+        patient = patientEntity,
+        therapist = therapistEntity,
+        title = title,
+        totalProgress = totalProgress,
+        description = description,
+        createdAt = createdAt,
+        updatedAt = updatedAt
+    )
+    val objectivesEntity = objectives.map { domainObj ->
+        val objEntity = domainObj.toEntity()
+        objEntity.progressPlan = planEntity
+        objEntity.subobjectives.forEach { subEntity -> subEntity.objective = objEntity }
+        objEntity
+    }
+    planEntity.objectives.addAll(objectivesEntity)
+    return planEntity
+}
+
+fun Objective.toEntity(): ObjectiveEntity =
+    ObjectiveEntity(
+        id = id,
+        title = title,
+        description = description,
+        orderIndex = orderIndex,
+        createdAt = createdAt,
+        subobjectives = subobjectives.map { it.toEntity() }.toMutableList()
     )
 
 

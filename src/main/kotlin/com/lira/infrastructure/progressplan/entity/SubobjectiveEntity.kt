@@ -1,6 +1,7 @@
 package com.lira.infrastructure.progressplan.entity
 
 import com.lira.domain.progressplan.Subobjective
+import com.lira.domain.progressplan.SubobjectiveType
 import jakarta.persistence.*
 import java.time.LocalDateTime
 
@@ -43,6 +44,19 @@ class SubobjectiveEntity(
 
 fun SubobjectiveEntity.toDomain(): Subobjective =
     Subobjective(
+        id = id,
+        title = title,
+        description = description,
+        type = type,
+        targetValue = targetValue,
+        targetSuccess = targetSuccess,
+        targetFail = targetFail,
+        currentProgress = currentProgress,
+        createdAt = createdAt
+    )
+
+fun Subobjective.toEntity(): SubobjectiveEntity =
+    SubobjectiveEntity(
         id = id,
         title = title,
         description = description,

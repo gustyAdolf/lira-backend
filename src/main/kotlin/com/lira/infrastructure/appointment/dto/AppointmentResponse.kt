@@ -2,7 +2,7 @@ package com.lira.infrastructure.appointment.dto
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.lira.domain.appointment.Appointment
-import com.lira.infrastructure.appointment.AppointmentStatus
+import com.lira.domain.appointment.AppointmentStatus
 import com.lira.infrastructure.mentaldisorder.MentalDisorderResponse
 import com.lira.infrastructure.mentaldisorder.toResponse
 import com.lira.infrastructure.user.dto.PatientResponse

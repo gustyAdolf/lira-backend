@@ -9,6 +9,7 @@ import com.lira.infrastructure.rest.ApiResponse
 import com.lira.infrastructure.rest.ApiResponseStatus
 import com.lira.infrastructure.util.PageableUtil
 import org.springframework.format.annotation.DateTimeFormat
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import java.time.LocalDateTime
 
@@ -20,6 +21,7 @@ class EmotionEntryController(
 ) {
 
     @GetMapping("/user/{userId}")
+    @PreAuthorize("hasAnyAuthority('ADMIN','THERAPIST','PATIENT')")
     fun getEmotionsByUserId(
         @PathVariable userId: Int,
         @RequestParam(value = "startDate") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") startDate: LocalDateTime = defaultStartDate(),
@@ -38,6 +40,7 @@ class EmotionEntryController(
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyAuthority('ADMIN','THERAPIST','PATIENT')")
     fun createEmotionRegistry(
         @RequestBody emotionEntryRequest: EmotionEntryRequest
     ): ApiResponse<Unit> {

@@ -6,8 +6,8 @@ server:
     context-path: /lira-api
 
 jwt:
-  secret: ph0bo$
-  expirationMs: 604800000 # 7 days in millisenconds
+  secret: ${JWT_SECRET:ph0bo$_dev_only}
+  expirationMs: 604800000 # 7 days in milliseconds
 
 spring:
   application:
@@ -18,21 +18,17 @@ spring:
     open-in-view: false
 
   datasource:
-    # Local host
-#    url: jdbc:postgresql://localhost:5432/phobosdb
-    # Mac db
-    url: jdbc:postgresql://192.168.4.42:5432/liradb
-    # AWS db
-#    url: jdbc:postgresql://13.50.156.119:5432/phobosdb
-
-    # Docker net
-#    url: jdbc:postgresql://phobos_db:5432/phobosdb
-
-    username: lira
-    password: L1ra
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/liradb}
+    username: ${DB_USERNAME:lira}
+    password: ${DB_PASSWORD:L1ra}
     hikari:
       connection-timeout: 30000
       max-lifetime: 18000000
+
+  flyway:
+    baseline-on-migrate: true
+    baseline-version: 3
+    locations: classpath:db/migration
 
 user:
   image:

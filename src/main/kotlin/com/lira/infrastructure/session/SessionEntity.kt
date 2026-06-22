@@ -47,3 +47,14 @@ fun SessionEntity.toDomain(): Session = Session(
     therapistNotes = this.therapistNotes,
     userNotes = this.userNotes
 )
+
+fun Session.toEntity(): SessionEntity = SessionEntity(
+    sessionDate = sessionDate,
+    activationLevel = activationLevel,
+    exposureLevel = exposureLevel,
+    userId = userId,
+    mentalDisorderId = mentalDisorderId,
+    progress = progress,
+    therapistNotes = therapistNotes,
+    userNotes = userNotes
+)

@@ -1,7 +1,7 @@
 package com.lira.infrastructure.progressplan.dto
 
 import com.lira.domain.progressplan.Subobjective
-import com.lira.infrastructure.progressplan.entity.SubobjectiveType
+import com.lira.domain.progressplan.SubobjectiveType
 
 data class SubobjectiveRequest(
     val title: String,

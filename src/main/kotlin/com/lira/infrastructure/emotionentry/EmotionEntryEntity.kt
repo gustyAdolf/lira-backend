@@ -47,3 +47,13 @@ fun EmotionEntryEntity.toDomain() =
         notes = this.notes,
         createdAt = this.createdAt,
     )
+
+fun EmotionEntry.toEntity(patientEntity: PatientEntity) = EmotionEntryEntity(
+    patient = patientEntity,
+    firstEmotion = firstEmotion,
+    secondEmotion = secondEmotion,
+    thirdEmotion = thirdEmotion,
+    intensity = intensity,
+    notes = notes,
+    createdAt = createdAt ?: LocalDateTime.now()
+)

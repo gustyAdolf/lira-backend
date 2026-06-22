@@ -31,3 +31,16 @@ fun CompanyEntity.toDomain(): Company = Company(
     userType = UserType.COMPANY,
     companyId = 0,
 )
+
+fun Company.toEntity(): CompanyEntity = CompanyEntity(
+    cif = cif,
+    companyAddress = companyAddress
+).apply {
+    this.name = this@toEntity.name
+    this.email = this@toEntity.email
+    this.password = this@toEntity.password
+    this.profileImagePath = this@toEntity.profileImagePath
+    this.telephone = this@toEntity.telephone
+    this.address = this@toEntity.address
+    this.userType = this@toEntity.userType
+}

@@ -1,6 +1,5 @@
 package com.lira.domain.user
 
-import com.lira.infrastructure.user.entity.CompanyEntity
 import java.time.LocalDate
 
 data class Company(
@@ -17,18 +16,3 @@ data class Company(
     val cif: String?,
     val companyAddress: String?
 ) : User()
-
-fun Company.toEntity(): CompanyEntity {
-    return CompanyEntity(
-        companyAddress = companyAddress,
-        cif = cif
-    ).apply {
-        this.name = this@toEntity.name
-        this.email = this@toEntity.email
-        this.password = this@toEntity.password
-        this.profileImagePath = this@toEntity.profileImagePath
-        this.telephone = this@toEntity.telephone
-        this.address = this@toEntity.address
-        this.userType = this@toEntity.userType
-    }
-}

@@ -33,3 +33,9 @@ fun CheckinEntity.toDomain() = Checkin(
     checkoutTime = checkoutTime,
     totalHours = totalHours
 )
+
+fun Checkin.toEntity(userEntity: UserEntity) = CheckinEntity(
+    user = userEntity,
+    checkinTime = checkinTime,
+    checkoutTime = checkoutTime,
+)

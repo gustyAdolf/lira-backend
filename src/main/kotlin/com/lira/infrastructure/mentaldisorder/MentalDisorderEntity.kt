@@ -20,3 +20,5 @@ fun MentalDisorderEntity.toDomain(): MentalDisorder = MentalDisorder(
     id = this.id,
     name = this.name
 )
+
+fun MentalDisorder.toEntity(): MentalDisorderEntity = MentalDisorderEntity(id, name)

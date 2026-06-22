@@ -1,11 +1,12 @@
 package com.lira.infrastructure.progressplan.entity
 
+import com.lira.domain.progressplan.SubobjectiveEntry
 import jakarta.persistence.*
 import java.time.LocalDateTime
 
 @Entity
 @Table(name = "subobjective_entries")
-class SubobjectiveEntry(
+class SubobjectiveEntryEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Int = 0,
@@ -27,4 +28,13 @@ class SubobjectiveEntry(
 
     @Column(name = "note")
     val note: String,
+)
+
+fun SubobjectiveEntry.toEntity() = SubobjectiveEntryEntity(
+    subobjectiveId = subobjectiveId,
+    therapistId = therapistId,
+    entryDate = entryDate,
+    valueIncrement = valueIncrement,
+    isSuccess = isSuccess,
+    note = note
 )

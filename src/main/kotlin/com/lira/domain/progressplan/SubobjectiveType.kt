@@ -1,4 +1,4 @@
-package com.lira.infrastructure.progressplan.entity
+package com.lira.domain.progressplan
 
 enum class SubobjectiveType {
     QUALITATIVE,

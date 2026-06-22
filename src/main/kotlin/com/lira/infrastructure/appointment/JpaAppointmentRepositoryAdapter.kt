@@ -2,7 +2,8 @@ package com.lira.infrastructure.appointment
 
 import com.lira.domain.appointment.Appointment
 import com.lira.domain.appointment.AppointmentRepository
-import com.lira.domain.appointment.toEntity
+import com.lira.domain.appointment.AppointmentStatus
+import com.lira.infrastructure.appointment.toEntity
 import com.lira.domain.exceptions.AppointmentException
 import com.lira.infrastructure.mentaldisorder.MentalDisorderEntity
 import com.lira.infrastructure.user.entity.TherapistEntity

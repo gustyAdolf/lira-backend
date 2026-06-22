@@ -2,7 +2,7 @@ package com.lira.infrastructure.emotionentry
 
 import com.lira.domain.emotionentry.EmotionEntry
 import com.lira.domain.emotionentry.EmotionEntryRepository
-import com.lira.domain.emotionentry.toEntity
+import com.lira.infrastructure.emotionentry.toEntity
 import com.lira.infrastructure.user.entity.PatientEntity
 import jakarta.persistence.EntityManager
 import org.springframework.data.domain.Sort

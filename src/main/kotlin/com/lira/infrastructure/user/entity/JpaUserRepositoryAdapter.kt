@@ -2,7 +2,6 @@ package com.lira.infrastructure.user.entity
 
 import com.lira.domain.user.*
 import com.lira.infrastructure.user.UserCompanyEntity
-import com.lira.infrastructure.user.UserQueryType
 import com.lira.infrastructure.user.jpa.JpaCompanyRepository
 import com.lira.infrastructure.user.jpa.JpaPatientRepository
 import com.lira.infrastructure.user.jpa.JpaTherapistRepository
@@ -25,8 +24,7 @@ class JpaUserRepositoryAdapter(
     }
 
     override fun findTherapistsByCompanyId(companyId: Int): List<Therapist> {
-        return TODO()//jpaUserRepository.findTherapistsByCompanyId(companyId)
-        //.map { it.toDomain() }
+        return jpaTherapistRepository.findByCompanyId(companyId).map { it.toDomain() }
     }
 
     override fun findByEmail(email: String): User? {
@@ -59,7 +57,7 @@ class JpaUserRepositoryAdapter(
                 )
                 else jpaUserRepository.findByNameContainingIgnoreCaseAndUserType(
                     name,
-                    userType.toUserEntityType(),
+                    userType.toUserType(),
                     pageable
                 )
 
@@ -68,7 +66,7 @@ class JpaUserRepositoryAdapter(
 
             else ->
                 if (UserQueryType.ALL == userType) jpaUserRepository.findAll(pageable)
-                else jpaUserRepository.findAllByUserType(userType.toUserEntityType(), pageable)
+                else jpaUserRepository.findAllByUserType(userType.toUserType(), pageable)
 
 
         }
@@ -91,7 +89,7 @@ class JpaUserRepositoryAdapter(
                 saveUserCompany(user.companyId, therapist)
             }
 
-            is Company -> TODO()
+            is Company -> jpaCompanyRepository.save(user.toEntity())
         }
     }
 

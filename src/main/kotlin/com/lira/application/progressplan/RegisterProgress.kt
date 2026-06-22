@@ -4,7 +4,7 @@ import com.lira.domain.progressplan.ProgressPlan
 import com.lira.domain.progressplan.ProgressPlanRepository
 import com.lira.infrastructure.progressplan.dto.SubobjectiveEntryRequest
 import com.lira.infrastructure.progressplan.dto.toDomain
-import com.lira.infrastructure.progressplan.entity.SubobjectiveType
+import com.lira.domain.progressplan.SubobjectiveType
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 

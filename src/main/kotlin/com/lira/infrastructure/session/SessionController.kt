@@ -5,6 +5,7 @@ import com.lira.application.session.GetSessions
 import com.lira.infrastructure.util.PageableUtil
 import org.springframework.data.domain.Page
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -15,6 +16,7 @@ class SessionController(
 ) {
 
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('ADMIN','THERAPIST')")
     fun getSessionBy(
         @RequestParam(value = "userId", required = true) userId: Int,
         @RequestParam(value = "mentalDisorderId", required = true) mentalDisorderId: Int,
@@ -29,6 +31,7 @@ class SessionController(
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyAuthority('ADMIN','THERAPIST')")
     fun newSession(@RequestBody session: SessionRequest): ResponseEntity<Void> {
         createSession.execute(session)
         return ResponseEntity.ok().build()

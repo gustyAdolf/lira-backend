@@ -2,7 +2,7 @@ package com.lira.infrastructure.session
 
 import com.lira.domain.session.Session
 import com.lira.domain.session.SessionRepository
-import com.lira.domain.session.toEntity
+import com.lira.infrastructure.session.toEntity
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Repository

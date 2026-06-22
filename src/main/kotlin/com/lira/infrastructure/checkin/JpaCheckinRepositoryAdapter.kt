@@ -2,7 +2,7 @@ package com.lira.infrastructure.checkin
 
 import com.lira.domain.checkin.Checkin
 import com.lira.domain.checkin.CheckinRepository
-import com.lira.domain.checkin.toEntity
+import com.lira.infrastructure.checkin.entity.toEntity
 import com.lira.domain.exceptions.CheckinException
 import com.lira.infrastructure.checkin.entity.toDomain
 import com.lira.infrastructure.checkin.jpa.JpaCheckinRepository

@@ -1,6 +1,5 @@
 package com.lira.domain.session
 
-import com.lira.infrastructure.session.SessionEntity
 import java.time.LocalDateTime
 
 data class Session(
@@ -14,15 +13,3 @@ data class Session(
     val therapistNotes: String,
     val userNotes: String
 )
-
-fun Session.toEntity(): SessionEntity =
-    SessionEntity(
-        sessionDate = sessionDate,
-        activationLevel = activationLevel,
-        exposureLevel = exposureLevel,
-        userId = userId,
-        mentalDisorderId = mentalDisorderId,
-        progress = progress,
-        therapistNotes = therapistNotes,
-        userNotes = userNotes
-    )

@@ -1,7 +1,6 @@
 package com.lira.domain.user
 
 import com.lira.domain.mentaldisorder.MentalDisorder
-import com.lira.infrastructure.user.entity.PatientEntity
 import java.time.LocalDate
 
 data class Patient(
@@ -19,18 +18,3 @@ data class Patient(
     val gender: String? = null,
     val mentalDisorders: List<MentalDisorder> = emptyList()
 ) : User()
-
-fun Patient.toEntity(): PatientEntity {
-    return PatientEntity(
-        birthdate = birthdate,
-        gender = gender
-    ).apply {
-        this.name = this@toEntity.name
-        this.email = this@toEntity.email
-        this.password = this@toEntity.password
-        this.profileImagePath = this@toEntity.profileImagePath
-        this.telephone = this@toEntity.telephone
-        this.address = this@toEntity.address
-        this.userType = this@toEntity.userType
-    }
-}

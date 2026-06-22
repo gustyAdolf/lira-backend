@@ -4,6 +4,7 @@ import com.lira.application.user.GetTherapistsAvailability
 import com.lira.infrastructure.user.dto.TherapistAvailabilityResponse
 import com.lira.infrastructure.user.dto.toResponse
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
@@ -16,6 +17,7 @@ class CompanyController(
 ) {
 
     @GetMapping("/{companyId}/therapists/availability")
+    @PreAuthorize("hasAnyAuthority('ADMIN','COMPANY')")
     fun getTherapistsAvailability(@PathVariable companyId: String): ResponseEntity<List<TherapistAvailabilityResponse>> {
         val therapistAvailability = getTherapistsAvailability.execute(companyId.toInt())
         return ResponseEntity.ok(therapistAvailability.map { it.toResponse() })

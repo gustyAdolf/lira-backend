@@ -25,3 +25,15 @@ fun TherapistEntity.toDomain(): Therapist = Therapist(
     releaseDate = releaseDate,
     licenseNumber = this.licenseNumber
 )
+
+fun Therapist.toEntity(): TherapistEntity = TherapistEntity(
+    licenseNumber = licenseNumber
+).apply {
+    this.name = this@toEntity.name
+    this.email = this@toEntity.email
+    this.password = this@toEntity.password
+    this.profileImagePath = this@toEntity.profileImagePath
+    this.telephone = this@toEntity.telephone
+    this.address = this@toEntity.address
+    this.userType = this@toEntity.userType
+}

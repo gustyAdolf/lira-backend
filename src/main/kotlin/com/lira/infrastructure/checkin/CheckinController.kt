@@ -1,7 +1,7 @@
 package com.lira.infrastructure.checkin
 
 import com.lira.application.checkin.*
-import com.lira.domain.checkin.toResponse
+import com.lira.infrastructure.checkin.dto.toResponse
 import com.lira.infrastructure.checkin.dto.CheckinRequest
 import com.lira.infrastructure.checkin.dto.CheckinResponse
 import com.lira.infrastructure.checkin.dto.CheckoutRequest
@@ -9,11 +9,13 @@ import com.lira.infrastructure.checkin.dto.NewCheckinRequest
 import com.lira.infrastructure.rest.ApiResponse
 import com.lira.infrastructure.rest.ApiResponseStatus
 import org.springframework.format.annotation.DateTimeFormat
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import java.time.LocalDate
 
 @RestController
 @RequestMapping("/checkins")
+@PreAuthorize("hasAnyAuthority('ADMIN','THERAPIST')")
 class CheckinController(
     private val checkin: Checkin,
     private val checkout: Checkout,

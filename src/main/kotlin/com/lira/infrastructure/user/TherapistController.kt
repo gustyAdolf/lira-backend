@@ -1,9 +1,10 @@
 package com.lira.infrastructure.user
 
 import com.lira.application.user.ListTherapistByCompany
-import com.lira.domain.user.Therapist
-import com.lira.infrastructure.user.dto.PatientResponse
+import com.lira.infrastructure.user.dto.TherapistResponse
+import com.lira.infrastructure.user.dto.toResponse
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
@@ -15,10 +16,9 @@ class TherapistController(
     private val listTherapistByCompany: ListTherapistByCompany
 ) {
     @GetMapping("/company/{companyId}")
-    fun getTherapistsByCompany(@PathVariable companyId: Int): ResponseEntity<List<PatientResponse>> {
-        val therapists: List<Therapist> = listTherapistByCompany.execute(companyId)
-        return TODO()
-//        val response = therapists.map { it.toResponse() }
-//        return ResponseEntity.ok(response)
+    @PreAuthorize("hasAnyAuthority('ADMIN','COMPANY')")
+    fun getTherapistsByCompany(@PathVariable companyId: Int): ResponseEntity<List<TherapistResponse>> {
+        val therapists = listTherapistByCompany.execute(companyId).map { it.toResponse() }
+        return ResponseEntity.ok(therapists)
     }
 }

@@ -4,7 +4,8 @@ import com.lira.application.user.CreateUser
 import com.lira.application.user.GetUserMentalDisorder
 import com.lira.application.user.GetUsers
 import com.lira.application.user.UserQueryService
-import com.lira.domain.user.toResponse
+import com.lira.domain.user.UserQueryType
+import com.lira.infrastructure.user.dto.toResponse
 import com.lira.infrastructure.mentaldisorder.MentalDisorderResponse
 import com.lira.infrastructure.mentaldisorder.toResponse
 import com.lira.infrastructure.security.LiraUserDetails
@@ -16,6 +17,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
@@ -31,6 +33,7 @@ class UserController(
 ) {
 
     @GetMapping
+    @PreAuthorize("isAuthenticated()")
     fun getAllUsers(
         @RequestParam(required = false) name: String?,
         @RequestParam(required = false) mentalDisorder: String?,
@@ -45,6 +48,7 @@ class UserController(
     }
 
     @GetMapping("/my-user")
+    @PreAuthorize("isAuthenticated()")
     fun getMyUser(@AuthenticationPrincipal userDetails: LiraUserDetails): ResponseEntity<UserResponse> {
         return try {
             val email = userDetails.username
@@ -57,6 +61,7 @@ class UserController(
 
 
     @GetMapping("/{userId}/mental-disorder")
+    @PreAuthorize("hasAnyAuthority('ADMIN','THERAPIST','PATIENT')")
     fun getUserMentalDisorder(
         @PathVariable(value = "userId", required = true) userId: Int
     ): ResponseEntity<List<MentalDisorderResponse>> {
@@ -65,6 +70,7 @@ class UserController(
     }
 
     @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
+    @PreAuthorize("hasAnyAuthority('ADMIN','THERAPIST','COMPANY')")
     fun createUser(
         @RequestPart userRequest: UserRequest,
         @RequestParam("image", required = false) image: MultipartFile?

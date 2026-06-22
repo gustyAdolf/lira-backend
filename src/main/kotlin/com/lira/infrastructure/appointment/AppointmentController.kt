@@ -11,6 +11,7 @@ import com.lira.infrastructure.util.PageableUtil
 import org.springframework.data.domain.PageRequest
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import java.time.LocalDate
 
@@ -27,6 +28,7 @@ class AppointmentController(
     private val deleteAppointment: DeleteAppointment
 ) {
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('ADMIN','THERAPIST')")
     fun getTherapistAppointments(
         @RequestParam(value = "therapistId") therapistId: Int,
         @RequestParam(value = "startDate") @DateTimeFormat(pattern = "yyyy-MM-dd") startDate: LocalDate,
@@ -46,6 +48,7 @@ class AppointmentController(
     }
 
     @GetMapping("/patient")
+    @PreAuthorize("hasAnyAuthority('ADMIN','PATIENT')")
     fun getPatientAppointments(
         @RequestParam(value = "patientId") patientId: Int,
         @RequestParam(value = "startDate") @DateTimeFormat(pattern = "yyyy-MM-dd") startDate: LocalDate,
@@ -65,6 +68,7 @@ class AppointmentController(
     }
 
     @GetMapping("/company")
+    @PreAuthorize("hasAnyAuthority('ADMIN','COMPANY')")
     fun getCompanyAppointments(
         @RequestParam(value = "companyId") companyId: Int,
         @RequestParam(value = "startDate") @DateTimeFormat(pattern = "yyyy-MM-dd") startDate: LocalDate,
@@ -84,6 +88,7 @@ class AppointmentController(
     }
 
     @GetMapping("/patient/next")
+    @PreAuthorize("hasAnyAuthority('ADMIN','PATIENT')")
     fun getNextPatientAppointments(
         @RequestParam(value = "patientId") patientId: Int,
         @RequestParam(value = "numOfAppointments", defaultValue = "10") numOfAppointments: Int,
@@ -94,6 +99,7 @@ class AppointmentController(
     }
 
     @GetMapping("/next")
+    @PreAuthorize("hasAnyAuthority('ADMIN','THERAPIST')")
     fun getNextTherapistAppointments(
         @RequestParam(value = "therapistId") therapistId: Int
     ): ResponseEntity<List<AppointmentResponse>> {
@@ -104,6 +110,7 @@ class AppointmentController(
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyAuthority('ADMIN','THERAPIST','COMPANY')")
     fun createAppointment(@RequestBody appointmentRequest: AppointmentRequest): ResponseEntity<AppointmentResponse> {
 
         val createdAppointment = createAppointment.execute(appointmentRequest)
@@ -111,6 +118,7 @@ class AppointmentController(
     }
 
     @PatchMapping("/{appointmentId}/status")
+    @PreAuthorize("hasAnyAuthority('ADMIN','THERAPIST','PATIENT')")
     fun updateAppointmentStatus(
         @PathVariable appointmentId: Int,
         @RequestBody appointmentStatusUpdateRequest: UpdateAppointmentStatusRequest
@@ -120,6 +128,7 @@ class AppointmentController(
     }
 
     @DeleteMapping("/{appointmentId}")
+    @PreAuthorize("hasAnyAuthority('ADMIN','THERAPIST')")
     fun deleteAppointment(@PathVariable("appointmentId") appointmentId: Int): ResponseEntity<Void> {
 
         deleteAppointment.execute(appointmentId)

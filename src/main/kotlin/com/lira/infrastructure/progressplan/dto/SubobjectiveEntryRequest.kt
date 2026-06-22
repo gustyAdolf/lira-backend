@@ -1,6 +1,6 @@
 package com.lira.infrastructure.progressplan.dto
 
-import com.lira.infrastructure.progressplan.entity.SubobjectiveEntry
+import com.lira.domain.progressplan.SubobjectiveEntry
 import java.time.LocalDateTime
 
 data class SubobjectiveEntryRequest(

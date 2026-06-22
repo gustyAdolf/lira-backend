@@ -5,7 +5,7 @@ import com.lira.domain.appointment.Appointment
 import com.lira.domain.mentaldisorder.MentalDisorder
 import com.lira.domain.user.Patient
 import com.lira.domain.user.Therapist
-import com.lira.infrastructure.appointment.AppointmentStatus
+import com.lira.domain.appointment.AppointmentStatus
 import java.math.BigDecimal
 import java.time.LocalDateTime
 

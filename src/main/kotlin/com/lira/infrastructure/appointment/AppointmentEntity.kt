@@ -1,6 +1,7 @@
 package com.lira.infrastructure.appointment
 
 import com.lira.domain.appointment.Appointment
+import com.lira.domain.appointment.AppointmentStatus
 import com.lira.infrastructure.mentaldisorder.MentalDisorderEntity
 import com.lira.infrastructure.mentaldisorder.toDomain
 import com.lira.infrastructure.user.entity.TherapistEntity
@@ -42,7 +43,7 @@ data class AppointmentEntity(
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    val status: AppointmentStatus
+    val status: AppointmentStatus  // domain enum — JPA serializes by name
 )
 
 fun AppointmentEntity.toDomain(): Appointment {
@@ -58,3 +59,18 @@ fun AppointmentEntity.toDomain(): Appointment {
         status = this.status
     )
 }
+
+fun Appointment.toEntity(
+    therapistEntity: TherapistEntity,
+    patientEntity: PatientEntity,
+    mentalDisorderEntity: MentalDisorderEntity
+): AppointmentEntity = AppointmentEntity(
+    therapist = therapistEntity,
+    patient = patientEntity,
+    mentalDisorder = mentalDisorderEntity,
+    appointmentDate = appointmentDate,
+    appointmentDuration = appointmentDuration,
+    description = description,
+    cost = cost,
+    status = status
+)

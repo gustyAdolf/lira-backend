@@ -31,3 +31,16 @@ fun PatientEntity.toDomain(): Patient = Patient(
     birthdate = birthdate,
     gender = gender,
 )
+
+fun Patient.toEntity(): PatientEntity = PatientEntity(
+    birthdate = birthdate,
+    gender = gender
+).apply {
+    this.name = this@toEntity.name
+    this.email = this@toEntity.email
+    this.password = this@toEntity.password
+    this.profileImagePath = this@toEntity.profileImagePath
+    this.telephone = this@toEntity.telephone
+    this.address = this@toEntity.address
+    this.userType = this@toEntity.userType
+}
