@@ -91,6 +91,5 @@ fun UserEntity.toDomain(): User =
                 telephone = telephone, address = address, releaseDate = releaseDate,
                 cif = null, companyAddress = null
             )
-            else -> error("Tipo de usuario no soportado: ${this.userType}")
         }
     }
