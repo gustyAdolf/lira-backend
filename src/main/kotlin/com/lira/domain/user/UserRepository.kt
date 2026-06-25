@@ -11,5 +11,6 @@ interface UserRepository {
     fun findUsers(name: String?, mentalDisorder: String?, userType: UserQueryType, pageable: Pageable): Page<User>
     fun findPatients(name: String?, pageable: Pageable): Page<Patient>
     fun findAvailabilityByCompanyId(companyId: Int): List<TherapistAvailability>
+    fun findPatientsByCompanyId(companyId: Int): List<Patient>
     fun saveUser(user: User)
 }

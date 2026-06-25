@@ -85,6 +85,10 @@ class JpaUserRepositoryAdapter(
         TODO("Not yet implemented")
     }
 
+    override fun findPatientsByCompanyId(companyId: Int): List<Patient> {
+        return jpaPatientRepository.findByCompanyId(companyId).map { it.toDomain() }
+    }
+
     override fun saveUser(user: User) {
         when (user) {
             is Patient -> {
