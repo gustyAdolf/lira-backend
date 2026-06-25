@@ -45,4 +45,6 @@ interface ProgressPlanRepository {
     fun deleteEntriesBySubobjectiveId(subobjectiveId: Int)
 
     fun updateTotalProgress(planId: Int, progress: Double)
+
+    fun findEntriesByPlanSessionId(planSessionId: Int): List<SubobjectiveEntry>
 }

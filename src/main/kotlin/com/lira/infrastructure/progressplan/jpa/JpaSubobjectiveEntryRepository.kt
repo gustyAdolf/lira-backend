@@ -31,6 +31,8 @@ interface JpaSubobjectiveEntryRepository : JpaRepository<SubobjectiveEntryEntity
 
     fun findTop3BySubobjectiveIdOrderByEntryDateDesc(subobjectiveId: Int): List<SubobjectiveEntryEntity>
 
+    fun findByPlanSessionId(planSessionId: Int): List<SubobjectiveEntryEntity>
+
     @Modifying
     @Transactional
     @Query("DELETE FROM SubobjectiveEntryEntity e WHERE e.subobjectiveId = :subId")

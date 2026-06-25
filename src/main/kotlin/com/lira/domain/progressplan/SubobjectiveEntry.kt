@@ -7,6 +7,7 @@ data class SubobjectiveEntry(
     val subobjectiveId: Int,
     val therapistId: Int,
     val appointmentId: Int? = null,
+    val planSessionId: Int? = null,
     val entryDate: LocalDateTime,
     val valueIncrement: Int,
     val isSuccess: Boolean,

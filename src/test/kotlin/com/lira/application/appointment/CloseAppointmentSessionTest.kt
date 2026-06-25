@@ -4,10 +4,11 @@ import com.lira.domain.appointment.Appointment
 import com.lira.domain.appointment.AppointmentRepository
 import com.lira.domain.appointment.AppointmentStatus
 import com.lira.domain.appointment.AppointmentType
+import com.lira.domain.progressplan.PlanSession
+import com.lira.domain.progressplan.PlanSessionRepository
 import com.lira.domain.user.Patient
 import com.lira.domain.user.Therapist
 import io.mockk.every
-import io.mockk.justRun
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
@@ -20,12 +21,14 @@ import java.time.LocalDateTime
 class CloseAppointmentSessionTest {
 
     private lateinit var appointmentRepository: AppointmentRepository
+    private lateinit var planSessionRepository: PlanSessionRepository
     private lateinit var closeAppointmentSession: CloseAppointmentSession
 
     @BeforeEach
     fun setUp() {
         appointmentRepository = mockk()
-        closeAppointmentSession = CloseAppointmentSession(appointmentRepository)
+        planSessionRepository = mockk()
+        closeAppointmentSession = CloseAppointmentSession(appointmentRepository, planSessionRepository)
     }
 
     @Test
@@ -33,26 +36,30 @@ class CloseAppointmentSessionTest {
         // given
         val appointmentId = 10
         val notes = "El paciente mostró avance en la exposición"
-        val existing = appointment(appointmentId, AppointmentStatus.CONFIRMED)
+        val existing = appointment(appointmentId, AppointmentStatus.CONFIRMED, progressPlanId = 1)
         val updatedSlot = slot<Appointment>()
+        val sessionSlot = slot<PlanSession>()
         every { appointmentRepository.findById(appointmentId) } returns existing
         every { appointmentRepository.update(capture(updatedSlot)) } answers { updatedSlot.captured }
+        every { planSessionRepository.save(capture(sessionSlot)) } answers { sessionSlot.captured.copy(id = 99) }
 
         // when
         closeAppointmentSession.execute(appointmentId, notes)
 
         // then
-        val updated = updatedSlot.captured
-        assertEquals(AppointmentStatus.COMPLETED, updated.status)
-        assertEquals(notes, updated.therapistNotes)
-        verify(exactly = 1) { appointmentRepository.update(any()) }
+        assertEquals(AppointmentStatus.COMPLETED, updatedSlot.captured.status)
+        assertEquals(notes, updatedSlot.captured.therapistNotes)
+        assertEquals(appointmentId, sessionSlot.captured.appointmentId)
+        assertEquals(1, sessionSlot.captured.planId)
+        assertEquals(notes, sessionSlot.captured.notes)
+        verify(exactly = 1) { planSessionRepository.save(any()) }
     }
 
     @Test
-    fun `execute cierra cita sin notas cuando therapistNotes es null`() {
+    fun `execute no crea PlanSession si la cita no tiene plan asociado`() {
         // given
         val appointmentId = 11
-        val existing = appointment(appointmentId, AppointmentStatus.CONFIRMED)
+        val existing = appointment(appointmentId, AppointmentStatus.CONFIRMED, progressPlanId = null)
         val updatedSlot = slot<Appointment>()
         every { appointmentRepository.findById(appointmentId) } returns existing
         every { appointmentRepository.update(capture(updatedSlot)) } answers { updatedSlot.captured }
@@ -61,16 +68,16 @@ class CloseAppointmentSessionTest {
         closeAppointmentSession.execute(appointmentId, null)
 
         // then
-        val updated = updatedSlot.captured
-        assertEquals(AppointmentStatus.COMPLETED, updated.status)
-        assertEquals(null, updated.therapistNotes)
+        assertEquals(AppointmentStatus.COMPLETED, updatedSlot.captured.status)
+        verify(exactly = 0) { planSessionRepository.save(any()) }
     }
 
-    private fun appointment(id: Int, status: AppointmentStatus) = Appointment(
+    private fun appointment(id: Int, status: AppointmentStatus, progressPlanId: Int?) = Appointment(
         id = id,
         therapist = Therapist(id = 6),
         patient = Patient(id = 3),
         appointmentType = AppointmentType.FOLLOW_UP,
+        progressPlanId = progressPlanId,
         appointmentDate = LocalDateTime.now(),
         appointmentDuration = 60,
         description = null,

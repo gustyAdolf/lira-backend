@@ -172,4 +172,8 @@ class JpaProgressPlanAdapter(
         jpaProgressPlanRepository.updateTotalProgress(planId, progress)
     }
 
+    override fun findEntriesByPlanSessionId(planSessionId: Int): List<SubobjectiveEntry> {
+        return jpaSubobjectiveEntryRepository.findByPlanSessionId(planSessionId).map { it.toDomain() }
+    }
+
 }
