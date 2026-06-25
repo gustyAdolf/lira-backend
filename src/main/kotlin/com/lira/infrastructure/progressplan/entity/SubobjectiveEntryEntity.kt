@@ -17,6 +17,9 @@ class SubobjectiveEntryEntity(
     @Column(name = "therapist_id")
     val therapistId: Int,
 
+    @Column(name = "appointment_id")
+    val appointmentId: Int? = null,
+
     @Column(name = "entry_date")
     val entryDate: LocalDateTime,
 
@@ -30,9 +33,21 @@ class SubobjectiveEntryEntity(
     val note: String,
 )
 
+fun SubobjectiveEntryEntity.toDomain() = SubobjectiveEntry(
+    id = id,
+    subobjectiveId = subobjectiveId,
+    therapistId = therapistId,
+    appointmentId = appointmentId,
+    entryDate = entryDate,
+    valueIncrement = valueIncrement,
+    isSuccess = isSuccess,
+    note = note
+)
+
 fun SubobjectiveEntry.toEntity() = SubobjectiveEntryEntity(
     subobjectiveId = subobjectiveId,
     therapistId = therapistId,
+    appointmentId = appointmentId,
     entryDate = entryDate,
     valueIncrement = valueIncrement,
     isSuccess = isSuccess,

@@ -2,17 +2,19 @@ package com.lira.infrastructure.appointment.dto
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.lira.domain.appointment.Appointment
-import com.lira.domain.mentaldisorder.MentalDisorder
+import com.lira.domain.appointment.AppointmentStatus
+import com.lira.domain.appointment.AppointmentType
 import com.lira.domain.user.Patient
 import com.lira.domain.user.Therapist
-import com.lira.domain.appointment.AppointmentStatus
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
 data class AppointmentRequest(
     val therapistId: Int,
     val userId: Int,
-    val mentalDisorderId: Int,
+    val progressPlanId: Int? = null,
+    val appointmentType: AppointmentType = AppointmentType.GENERAL,
+    val therapistNotes: String? = null,
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     val appointmentDate: LocalDateTime = LocalDateTime.now(),
     val appointmentDuration: Int,
@@ -24,11 +26,12 @@ data class AppointmentRequest(
 fun AppointmentRequest.toDomain(): Appointment {
     val therapist = Therapist(id = therapistId)
     val patient = Patient(id = userId)
-    val mentalDisorder = MentalDisorder(id = mentalDisorderId)
     return Appointment(
         therapist = therapist,
         patient = patient,
-        mentalDisorder = mentalDisorder,
+        progressPlanId = progressPlanId,
+        appointmentType = appointmentType,
+        therapistNotes = therapistNotes,
         appointmentDate = appointmentDate,
         appointmentDuration = appointmentDuration,
         description = description,

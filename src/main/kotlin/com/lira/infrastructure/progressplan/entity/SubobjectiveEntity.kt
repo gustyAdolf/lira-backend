@@ -42,7 +42,11 @@ class SubobjectiveEntity(
     lateinit var objective: ObjectiveEntity
 }
 
-fun SubobjectiveEntity.toDomain(): Subobjective =
+fun SubobjectiveEntity.toDomain(
+    currentValue: Int = 0,
+    currentSuccess: Int = 0,
+    currentFail: Int = 0
+): Subobjective =
     Subobjective(
         id = id,
         title = title,
@@ -52,6 +56,9 @@ fun SubobjectiveEntity.toDomain(): Subobjective =
         targetSuccess = targetSuccess,
         targetFail = targetFail,
         currentProgress = currentProgress,
+        currentValue = currentValue,
+        currentSuccess = currentSuccess,
+        currentFail = currentFail,
         createdAt = createdAt
     )
 

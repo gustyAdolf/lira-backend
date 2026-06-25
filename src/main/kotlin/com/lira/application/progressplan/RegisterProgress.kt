@@ -6,6 +6,7 @@ import com.lira.infrastructure.progressplan.dto.SubobjectiveEntryRequest
 import com.lira.infrastructure.progressplan.dto.toDomain
 import com.lira.domain.progressplan.SubobjectiveType
 import jakarta.transaction.Transactional
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
 @Service
@@ -13,6 +14,8 @@ import org.springframework.stereotype.Service
 class RegisterProgress(
     private val progressPlanRepository: ProgressPlanRepository,
 ) {
+    private val log = LoggerFactory.getLogger(javaClass)
+
     fun execute(entryRequest: SubobjectiveEntryRequest): ProgressPlan {
         progressPlanRepository.saveSubobjectiveEntry(entryRequest.toDomain())
 
@@ -26,6 +29,10 @@ class RegisterProgress(
             subobjective.currentProgress = (totalSuccesses / (subobjective.targetSuccess ?: 1)).coerceAtMost(1.0)
         }
         progressPlanRepository.saveSubobjective(subobjective, entryRequest.objectiveId)
+        log.info(
+            "Progress registered: subobjectiveId=${entryRequest.subobjectiveId}, " +
+            "progress=${"%.0f".format(subobjective.currentProgress * 100)}%"
+        )
 
         val plan = progressPlanRepository.getProgressPlanBySubobjectiveId(entryRequest.subobjectiveId)
         val allSubobjectives = plan.objectives.flatMap { it.subobjectives }

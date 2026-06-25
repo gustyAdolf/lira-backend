@@ -2,8 +2,8 @@ package com.lira.application.appointment
 
 import com.lira.domain.appointment.Appointment
 import com.lira.domain.appointment.AppointmentRepository
+import com.lira.domain.appointment.AppointmentType
 import com.lira.domain.exceptions.AppointmentException
-import com.lira.domain.mentaldisorder.MentalDisorder
 import com.lira.domain.user.Patient
 import com.lira.domain.user.Therapist
 import com.lira.domain.appointment.AppointmentStatus
@@ -38,7 +38,7 @@ class UpdateAppointmentStatusTest {
             id = appointmentId,
             therapist = Therapist(id = 6),
             patient = Patient(id = 3),
-            mentalDisorder = MentalDisorder(id = 1),
+            appointmentType = AppointmentType.GENERAL,
             appointmentDate = LocalDateTime.now(),
             appointmentDuration = 60,
             description = null,

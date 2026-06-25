@@ -2,8 +2,7 @@ package com.lira.infrastructure.appointment
 
 import com.lira.domain.appointment.Appointment
 import com.lira.domain.appointment.AppointmentStatus
-import com.lira.infrastructure.mentaldisorder.MentalDisorderEntity
-import com.lira.infrastructure.mentaldisorder.toDomain
+import com.lira.domain.appointment.AppointmentType
 import com.lira.infrastructure.user.entity.TherapistEntity
 import com.lira.infrastructure.user.entity.PatientEntity
 import com.lira.infrastructure.user.entity.toDomain
@@ -25,9 +24,15 @@ data class AppointmentEntity(
     @JoinColumn(name = "user_id")
     val patient: PatientEntity,
 
-    @ManyToOne
-    @JoinColumn(name = "mental_disorder_id")
-    val mentalDisorder: MentalDisorderEntity,
+    @Column(name = "progress_plan_id")
+    val progressPlanId: Int? = null,
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "appointment_type")
+    val appointmentType: AppointmentType = AppointmentType.GENERAL,
+
+    @Column(name = "therapist_notes")
+    val therapistNotes: String? = null,
 
     @Column(name = "appointment_date")
     val appointmentDate: LocalDateTime,
@@ -43,31 +48,32 @@ data class AppointmentEntity(
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    val status: AppointmentStatus  // domain enum — JPA serializes by name
+    val status: AppointmentStatus
 )
 
-fun AppointmentEntity.toDomain(): Appointment {
-    return Appointment(
-        id = this.id,
-        therapist = this.therapist.toDomain(),
-        patient = this.patient.toDomain(),
-        mentalDisorder = this.mentalDisorder.toDomain(),
-        appointmentDate = this.appointmentDate,
-        appointmentDuration = this.appointmentDuration,
-        description = this.description,
-        cost = this.cost,
-        status = this.status
-    )
-}
+fun AppointmentEntity.toDomain(): Appointment = Appointment(
+    id = this.id,
+    therapist = this.therapist.toDomain(),
+    patient = this.patient.toDomain(),
+    progressPlanId = this.progressPlanId,
+    appointmentType = this.appointmentType,
+    therapistNotes = this.therapistNotes,
+    appointmentDate = this.appointmentDate,
+    appointmentDuration = this.appointmentDuration,
+    description = this.description,
+    cost = this.cost,
+    status = this.status
+)
 
 fun Appointment.toEntity(
     therapistEntity: TherapistEntity,
-    patientEntity: PatientEntity,
-    mentalDisorderEntity: MentalDisorderEntity
+    patientEntity: PatientEntity
 ): AppointmentEntity = AppointmentEntity(
     therapist = therapistEntity,
     patient = patientEntity,
-    mentalDisorder = mentalDisorderEntity,
+    progressPlanId = progressPlanId,
+    appointmentType = appointmentType,
+    therapistNotes = therapistNotes,
     appointmentDate = appointmentDate,
     appointmentDuration = appointmentDuration,
     description = description,

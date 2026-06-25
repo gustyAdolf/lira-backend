@@ -11,18 +11,8 @@ import org.springframework.transaction.annotation.Transactional
 class GetProgressPlanByPatientId(
     private val progressPlanRepository: ProgressPlanRepository,
 ) {
-
     fun execute(patientId: Int, therapistId: Int): List<ProgressPlanResponse> {
-        val progressPlans =
-            progressPlanRepository.getProgressPlanByPatientId(patientId, therapistId).map { it.toResponse() }
-        progressPlans.forEach { progressPlan ->
-            progressPlan.objectives.forEach { objective ->
-                objective.subobjectives.forEach { subobjective ->
-                    subobjective.currentValue = progressPlanRepository.sumValueBySubobjective(subobjective.id).toInt()
-                    subobjective.currentSuccess = progressPlanRepository.countSuccessesBySubobjective(subobjective.id).toInt()
-                }
-            }
-        }
-        return progressPlans
+        return progressPlanRepository.getProgressPlanByPatientId(patientId, therapistId)
+            .map { it.toResponse() }
     }
 }

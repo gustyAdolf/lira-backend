@@ -72,5 +72,25 @@ fun UserEntity.toDomain(): User =
             companyAddress = this.companyAddress
         )
 
-        else -> error("Tipo de usuario no soportado: ${this::class.simpleName}")
+        // Fallback para proxies Hibernate con herencia JOINED que no inicializan el subtipo
+        else -> when (this.userType) {
+            UserType.PATIENT -> Patient(
+                id = id, email = email, name = name,
+                profileImagePath = profileImagePath, password = password,
+                telephone = telephone, address = address, releaseDate = releaseDate,
+                birthdate = null, gender = null, mentalDisorders = emptyList()
+            )
+            UserType.THERAPIST -> Therapist(
+                id = id, email = email, name = name,
+                profileImagePath = profileImagePath, password = password,
+                telephone = telephone, address = address, releaseDate = releaseDate
+            )
+            UserType.COMPANY -> Company(
+                id = id, email = email, name = name,
+                profileImagePath = profileImagePath, password = password,
+                telephone = telephone, address = address, releaseDate = releaseDate,
+                cif = null, companyAddress = null
+            )
+            else -> error("Tipo de usuario no soportado: ${this.userType}")
+        }
     }

@@ -71,8 +71,13 @@ interface JpaAppointmentRepository : JpaRepository<AppointmentEntity, Int> {
     ): List<AppointmentEntity>
 
     @Query(
+        """SELECT DISTINCT a.patient.id FROM AppointmentEntity a WHERE a.therapist.id = :therapistId"""
+    )
+    fun findPatientIdsByTherapistId(@Param("therapistId") therapistId: Int): Set<Int>
+
+    @Query(
         """
-        SELECT a.therapist.id, COUNT(a) 
+        SELECT a.therapist.id, COUNT(a)
         FROM AppointmentEntity a
         WHERE a.therapist.id IN :therapistsId AND a.appointmentDate > :now
         GROUP BY a.therapist.id
@@ -82,5 +87,13 @@ interface JpaAppointmentRepository : JpaRepository<AppointmentEntity, Int> {
         @Param("therapistsId") therapistsId: List<Int>,
         @Param("now") now: LocalDateTime
     ): List<Array<Any>>
+
+    @Query(
+        """SELECT a FROM AppointmentEntity a
+            WHERE a.progressPlanId = :planId
+            AND a.status = com.lira.domain.appointment.AppointmentStatus.COMPLETED
+            ORDER BY a.appointmentDate DESC"""
+    )
+    fun findCompletedByPlanId(@Param("planId") planId: Int): List<AppointmentEntity>
 
 }

@@ -1,6 +1,5 @@
 package com.lira.domain.appointment
 
-import com.lira.domain.mentaldisorder.MentalDisorder
 import com.lira.domain.user.Patient
 import com.lira.domain.user.Therapist
 import java.math.BigDecimal
@@ -12,7 +11,9 @@ data class Appointment(
     val patient: Patient,
     val appointmentDate: LocalDateTime,
     val appointmentDuration: Int,
-    val mentalDisorder: MentalDisorder,
+    val progressPlanId: Int? = null,
+    val appointmentType: AppointmentType = AppointmentType.GENERAL,
+    val therapistNotes: String? = null,
     val description: String?,
     val status: AppointmentStatus,
     val cost: BigDecimal,

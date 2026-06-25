@@ -9,6 +9,7 @@ interface UserRepository {
     fun findTherapistsByCompanyId(companyId: Int): List<Therapist>
     fun findByEmail(email: String): User?
     fun findUsers(name: String?, mentalDisorder: String?, userType: UserQueryType, pageable: Pageable): Page<User>
+    fun findPatients(name: String?, pageable: Pageable): Page<Patient>
     fun findAvailabilityByCompanyId(companyId: Int): List<TherapistAvailability>
     fun saveUser(user: User)
 }

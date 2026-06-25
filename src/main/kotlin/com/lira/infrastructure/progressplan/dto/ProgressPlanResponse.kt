@@ -14,6 +14,7 @@ data class ProgressPlanResponse(
     val title: String,
     val description: String?,
     val totalProgress: Double = 0.0,
+    val mentalDisorderId: Int? = null,
     @field:JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     val createdAt: LocalDateTime,
     @field:JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
@@ -31,7 +32,7 @@ fun ProgressPlan.toResponse(): ProgressPlanResponse {
         createdAt = createdAt,
         updatedAt = updatedAt,
         totalProgress = totalProgress,
+        mentalDisorderId = mentalDisorderId,
         objectives = objectives.map(Objective::toResponse),
     )
 }
-

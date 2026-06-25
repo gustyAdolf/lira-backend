@@ -32,5 +32,11 @@ spring:
 
 user:
   image:
-    path: /lira/images/users/
+    path: /Users/gusty/Documents/lira/images/users/
     preffix: /images/users/
+
+logging:
+  level:
+    com.lira: INFO
+    org.springframework.security: WARN
+    org.hibernate.SQL: WARN

@@ -3,6 +3,7 @@ package com.lira.application.user
 import com.lira.domain.user.UserRepository
 import com.lira.infrastructure.user.dto.UserRequest
 import com.lira.infrastructure.user.dto.toDomain
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
@@ -19,6 +20,8 @@ class CreateUser(
     @Value("\${user.image.path}") private val imagePath: String,
     @Value("\${user.image.preffix}") private val preffixImageName: String
 ) {
+    private val log = LoggerFactory.getLogger(javaClass)
+
     fun execute(request: UserRequest, userImage: MultipartFile?) {
         val passwordEncoder = BCryptPasswordEncoder()
         val userImagePath = storageImage(userImage)
@@ -28,6 +31,7 @@ class CreateUser(
                 passwordEncoder.encode(request.password)
             )
         )
+        log.info("User created: ${request.email} [${request.userType}]")
     }
 
     private fun storageImage(image: MultipartFile?): String {

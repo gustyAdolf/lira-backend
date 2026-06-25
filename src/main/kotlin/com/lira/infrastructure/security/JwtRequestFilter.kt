@@ -4,6 +4,7 @@ import jakarta.servlet.FilterChain
 import jakarta.servlet.ServletException
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import org.slf4j.LoggerFactory
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetailsService
@@ -17,6 +18,8 @@ class JwtRequestFilter(
     private val userDetailsService: UserDetailsService,
     private val jwtUtil: JwtUtil
 ) : OncePerRequestFilter() {
+
+    private val log = LoggerFactory.getLogger(javaClass)
 
     @Throws(ServletException::class, IOException::class)
     override fun doFilterInternal(
@@ -43,6 +46,8 @@ class JwtRequestFilter(
                 )
                 usernamePasswordAuthenticationToken.details = WebAuthenticationDetailsSource().buildDetails(request)
                 SecurityContextHolder.getContext().authentication = usernamePasswordAuthenticationToken
+            } else {
+                log.warn("JWT validation failed for user: $username")
             }
         }
         chain.doFilter(request, response)

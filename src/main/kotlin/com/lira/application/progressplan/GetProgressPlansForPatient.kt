@@ -12,15 +12,6 @@ class GetProgressPlansForPatient(
     private val progressPlanRepository: ProgressPlanRepository,
 ) {
     fun execute(patientId: Int): List<ProgressPlanResponse> {
-        val plans = progressPlanRepository.getProgressPlansByPatientId(patientId).map { it.toResponse() }
-        plans.forEach { plan ->
-            plan.objectives.forEach { objective ->
-                objective.subobjectives.forEach { sub ->
-                    sub.currentValue = progressPlanRepository.sumValueBySubobjective(sub.id).toInt()
-                    sub.currentSuccess = progressPlanRepository.countSuccessesBySubobjective(sub.id).toInt()
-                }
-            }
-        }
-        return plans
+        return progressPlanRepository.getProgressPlansByPatientId(patientId).map { it.toResponse() }
     }
 }

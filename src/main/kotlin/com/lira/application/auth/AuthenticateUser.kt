@@ -3,6 +3,7 @@ package com.lira.application.auth
 import com.lira.application.user.UserQueryService
 import com.lira.infrastructure.auth.AuthenticationResponse
 import com.lira.infrastructure.security.JwtUtil
+import org.slf4j.LoggerFactory
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.userdetails.UserDetailsService
@@ -15,6 +16,8 @@ class AuthenticateUser(
     private val userDetailsService: UserDetailsService,
     private val userQueryService: UserQueryService
 ) {
+    private val log = LoggerFactory.getLogger(javaClass)
+
     fun execute(email: String, password: String): AuthenticationResponse {
         authenticationManager.authenticate(
             UsernamePasswordAuthenticationToken(email, password)
@@ -22,6 +25,7 @@ class AuthenticateUser(
         val userDetails = userDetailsService.loadUserByUsername(email)
         val token = jwtUtil.generateToken(userDetails)
         val userResponse = userQueryService.getUserByEmail(email)
+        log.info("User authenticated: $email [${userResponse.userType}]")
         return AuthenticationResponse(
             token = token,
             user = userResponse

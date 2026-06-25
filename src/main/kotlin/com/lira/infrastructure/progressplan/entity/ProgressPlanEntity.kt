@@ -32,6 +32,9 @@ data class ProgressPlanEntity(
     @Column(name = "total_progress")
     val totalProgress: Double,
 
+    @Column(name = "mental_disorder_id")
+    val mentalDisorderId: Int? = null,
+
     @Column(name = "created_at")
     val createdAt: LocalDateTime = LocalDateTime.now(),
 
@@ -42,7 +45,7 @@ data class ProgressPlanEntity(
     val objectives: MutableList<ObjectiveEntity> = mutableListOf()
 )
 
-fun ProgressPlanEntity.toDomain(): ProgressPlan =
+fun ProgressPlanEntity.toDomain(statsMap: Map<Int, Triple<Int, Int, Int>> = emptyMap()): ProgressPlan =
     ProgressPlan(
         id = this.id,
         patient = this.patient.toDomain(),
@@ -50,7 +53,8 @@ fun ProgressPlanEntity.toDomain(): ProgressPlan =
         title = this.title,
         description = this.description,
         totalProgress = this.totalProgress,
-        objectives = this.objectives.map(ObjectiveEntity::toDomain),
+        mentalDisorderId = this.mentalDisorderId,
+        objectives = this.objectives.map { it.toDomain(statsMap) },
         createdAt = this.createdAt,
         updatedAt = this.updatedAt
     )
@@ -66,6 +70,7 @@ fun ProgressPlan.toEntity(
         title = title,
         totalProgress = totalProgress,
         description = description,
+        mentalDisorderId = mentalDisorderId,
         createdAt = createdAt,
         updatedAt = updatedAt
     )
@@ -88,5 +93,3 @@ fun Objective.toEntity(): ObjectiveEntity =
         createdAt = createdAt,
         subobjectives = subobjectives.map { it.toEntity() }.toMutableList()
     )
-
-

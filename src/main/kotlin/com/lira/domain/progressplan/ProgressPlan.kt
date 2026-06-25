@@ -11,8 +11,8 @@ data class ProgressPlan(
     val title: String,
     var totalProgress: Double = 0.0,
     val description: String?,
+    val mentalDisorderId: Int? = null,
     val createdAt: LocalDateTime = LocalDateTime.now(),
     val updatedAt: LocalDateTime = LocalDateTime.now(),
     val objectives: List<Objective>
 )
-

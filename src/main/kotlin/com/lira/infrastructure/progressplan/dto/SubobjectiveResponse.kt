@@ -13,9 +13,9 @@ data class SubobjectiveResponse(
     val targetSuccess: Int?,
     val targetFail: Int?,
     val currentProgress: Double,
-    var currentValue: Int = 0,
-    var currentSuccess: Int = 0,
-    var currentFail: Int = 0,
+    val currentValue: Int,
+    val currentSuccess: Int,
+    val currentFail: Int,
     val createdAt: LocalDateTime
 )
 
@@ -29,6 +29,9 @@ fun Subobjective.toResponse(): SubobjectiveResponse {
         targetSuccess = targetSuccess,
         targetFail = targetFail,
         currentProgress = currentProgress,
+        currentValue = currentValue,
+        currentSuccess = currentSuccess,
+        currentFail = currentFail,
         createdAt = createdAt
     )
 }

@@ -9,6 +9,7 @@ data class ProgressPlanRequest(
     val therapistId: Int,
     val title: String,
     val description: String?,
+    val mentalDisorderId: Int? = null,
     val objectives: List<ObjectiveRequest>,
 )
 
@@ -20,7 +21,7 @@ fun ProgressPlanRequest.toDomain(): ProgressPlan {
         therapist = therapist,
         title = title,
         description = description,
+        mentalDisorderId = mentalDisorderId,
         objectives = objectives.map(ObjectiveRequest::toDomain)
     )
 }
-

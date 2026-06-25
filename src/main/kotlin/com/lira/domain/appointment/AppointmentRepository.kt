@@ -16,11 +16,19 @@ interface AppointmentRepository {
 
     fun findNextAppointmentsForPatient(patientId: Int, size: Int): List<Appointment>
 
+    fun findById(id: Int): Appointment
+
     fun save(appointment: Appointment): Appointment
+
+    fun update(appointment: Appointment): Appointment
 
     fun updateAppointmentStatus(appointmentId: Int, status: AppointmentStatus): Appointment
 
     fun deleteById(id: Int)
 
     fun countAppointmentsByTherapists(therapistsId: List<Int>, now: LocalDateTime): Map<Int, Int>
+
+    fun findPatientIdsByTherapistId(therapistId: Int): Set<Int>
+
+    fun findCompletedByPlanId(planId: Int): List<Appointment>
 }

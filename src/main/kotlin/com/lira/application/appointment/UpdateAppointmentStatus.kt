@@ -4,6 +4,7 @@ import com.lira.domain.appointment.Appointment
 import com.lira.domain.appointment.AppointmentRepository
 import com.lira.infrastructure.appointment.dto.UpdateAppointmentStatusRequest
 import jakarta.transaction.Transactional
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
 @Service
@@ -11,10 +12,14 @@ import org.springframework.stereotype.Service
 class UpdateAppointmentStatus(
     private val appointmentRepository: AppointmentRepository
 ) {
+    private val log = LoggerFactory.getLogger(javaClass)
+
     fun execute(
         appointmentId: Int,
         appointmentStatus: UpdateAppointmentStatusRequest
     ): Appointment {
-        return appointmentRepository.updateAppointmentStatus(appointmentId, appointmentStatus.status)
+        val updated = appointmentRepository.updateAppointmentStatus(appointmentId, appointmentStatus.status)
+        log.info("Appointment $appointmentId status updated to ${appointmentStatus.status}")
+        return updated
     }
 }

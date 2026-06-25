@@ -73,6 +73,14 @@ class JpaUserRepositoryAdapter(
         return result.map { it.toDomain() }
     }
 
+    override fun findPatients(name: String?, pageable: Pageable): Page<Patient> {
+        val page = if (name.isNullOrBlank())
+            jpaPatientRepository.findAllByOrderByNameAsc(pageable)
+        else
+            jpaPatientRepository.findByNameContainingIgnoreCaseOrderByNameAsc(name, pageable)
+        return page.map { it.toDomain() }
+    }
+
     override fun findAvailabilityByCompanyId(companyId: Int): List<TherapistAvailability> {
         TODO("Not yet implemented")
     }

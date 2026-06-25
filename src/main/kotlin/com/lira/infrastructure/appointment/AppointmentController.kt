@@ -3,6 +3,8 @@ package com.lira.infrastructure.appointment
 import com.lira.application.appointment.*
 import com.lira.infrastructure.appointment.dto.AppointmentRequest
 import com.lira.infrastructure.appointment.dto.AppointmentResponse
+import com.lira.infrastructure.appointment.dto.CloseSessionRequest
+import com.lira.infrastructure.appointment.dto.UpdateAppointmentRequest
 import com.lira.infrastructure.appointment.dto.UpdateAppointmentStatusRequest
 import com.lira.infrastructure.appointment.dto.toResponse
 import com.lira.infrastructure.rest.ApiResponse
@@ -24,8 +26,11 @@ class AppointmentController(
     private val getNextTherapistAppointments: GetNextTherapistAppointments,
     private val getNextPatientAppointments: GetNextPatientAppointments,
     private val createAppointment: CreateAppointment,
+    private val updateAppointment: UpdateAppointment,
     private val updateAppointmentStatus: UpdateAppointmentStatus,
-    private val deleteAppointment: DeleteAppointment
+    private val deleteAppointment: DeleteAppointment,
+    private val closeAppointmentSession: CloseAppointmentSession,
+    private val getAppointmentsByPlan: GetAppointmentsByPlan
 ) {
     @GetMapping
     @PreAuthorize("hasAnyAuthority('ADMIN','THERAPIST')")
@@ -117,6 +122,16 @@ class AppointmentController(
         return ResponseEntity.ok(createdAppointment.toResponse())
     }
 
+    @PutMapping("/{appointmentId}")
+    @PreAuthorize("hasAnyAuthority('ADMIN','THERAPIST','COMPANY')")
+    fun updateAppointment(
+        @PathVariable appointmentId: Int,
+        @RequestBody request: UpdateAppointmentRequest
+    ): ResponseEntity<AppointmentResponse> {
+        val updated = updateAppointment.execute(appointmentId, request)
+        return ResponseEntity.ok(updated.toResponse())
+    }
+
     @PatchMapping("/{appointmentId}/status")
     @PreAuthorize("hasAnyAuthority('ADMIN','THERAPIST','PATIENT')")
     fun updateAppointmentStatus(
@@ -130,9 +145,23 @@ class AppointmentController(
     @DeleteMapping("/{appointmentId}")
     @PreAuthorize("hasAnyAuthority('ADMIN','THERAPIST')")
     fun deleteAppointment(@PathVariable("appointmentId") appointmentId: Int): ResponseEntity<Void> {
-
         deleteAppointment.execute(appointmentId)
         return ResponseEntity.ok().build()
     }
+
+    @PostMapping("/{appointmentId}/close-session")
+    @PreAuthorize("hasAnyAuthority('ADMIN','THERAPIST')")
+    fun closeSession(
+        @PathVariable appointmentId: Int,
+        @RequestBody request: CloseSessionRequest
+    ): ResponseEntity<Unit> {
+        closeAppointmentSession.execute(appointmentId, request.therapistNotes)
+        return ResponseEntity.ok().build()
+    }
+
+    @GetMapping("/plan/{planId}")
+    @PreAuthorize("hasAnyAuthority('ADMIN','THERAPIST')")
+    fun getAppointmentsByPlan(@PathVariable planId: Int): ResponseEntity<List<AppointmentResponse>> =
+        ResponseEntity.ok(getAppointmentsByPlan.execute(planId).map { it.toResponse() })
 
 }
