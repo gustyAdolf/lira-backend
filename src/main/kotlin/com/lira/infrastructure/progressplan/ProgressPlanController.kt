@@ -5,6 +5,7 @@ import com.lira.application.progressplan.AddSubobjectiveToPlan
 import com.lira.application.progressplan.CreateProgressPlan
 import com.lira.application.progressplan.DeleteObjective
 import com.lira.application.progressplan.DeleteSubobjective
+import com.lira.application.progressplan.GetProgressPlanById
 import com.lira.application.progressplan.GetProgressPlanByPatientId
 import com.lira.application.progressplan.GetProgressPlansForPatient
 import com.lira.application.progressplan.GetSubobjectiveEntries
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/progress-plans")
 class ProgressPlanController(
+    private val getProgressPlanById: GetProgressPlanById,
     private val getProgressPlanByPatientId: GetProgressPlanByPatientId,
     private val getProgressPlansForPatient: GetProgressPlansForPatient,
     private val createProgressPlan: CreateProgressPlan,
@@ -43,6 +45,11 @@ class ProgressPlanController(
     private val addObjectiveToPlan: AddObjectiveToPlan,
     private val addSubobjectiveToPlan: AddSubobjectiveToPlan
 ) {
+
+    @GetMapping("/{planId}")
+    @PreAuthorize("hasAnyAuthority('ADMIN','THERAPIST','COMPANY')")
+    fun getProgressPlanById(@PathVariable planId: Int): ResponseEntity<ProgressPlanResponse> =
+        ResponseEntity.ok(getProgressPlanById.execute(planId))
 
     @GetMapping("/patient/{patientId}")
     @PreAuthorize("hasAnyAuthority('ADMIN','THERAPIST','PATIENT','COMPANY')")
