@@ -10,7 +10,7 @@ import jakarta.persistence.Table
 class TherapistEntity(
 
     @Column(name = "license_number")
-    val licenseNumber: String?,
+    var licenseNumber: String?,
 
     ) : UserEntity()
 

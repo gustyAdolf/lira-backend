@@ -2,6 +2,7 @@ package com.lira.infrastructure.user.dto
 
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
+import com.lira.domain.user.Company
 import com.lira.domain.user.Patient
 import com.lira.domain.user.Therapist
 import com.lira.domain.user.User
@@ -59,7 +60,18 @@ fun UserRequest.toDomain(userImagePath: String, encodePassword: String): User = 
         licenseNumber = licenseNumber
     )
 
-    is CompanyRequest -> TODO()
+    is CompanyRequest -> Company(
+        companyId = companyId,
+        name = name,
+        email = email,
+        password = encodePassword,
+        telephone = telephone,
+        address = address,
+        profileImagePath = userImagePath,
+        releaseDate = releaseDate,
+        cif = cif,
+        companyAddress = companyAddress
+    )
 }
 
 

@@ -13,7 +13,7 @@ class PatientEntity(
     val birthdate: LocalDate? = null,
 
     @Column(name = "gender")
-    val gender: String? = null,
+    var gender: String? = null,
 
     @OneToMany(mappedBy = "patient", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
     val userDisorders: List<UserDisorderEntity> = emptyList()

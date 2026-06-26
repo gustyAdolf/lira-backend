@@ -1,8 +1,10 @@
 package com.lira.infrastructure.user
 
+import com.lira.application.user.ChangePassword
 import com.lira.application.user.CreateUser
 import com.lira.application.user.GetUserMentalDisorder
 import com.lira.application.user.GetUsers
+import com.lira.application.user.UpdateUser
 import com.lira.application.user.UserQueryService
 import com.lira.domain.user.UserQueryType
 import com.lira.infrastructure.user.dto.toResponse
@@ -29,7 +31,9 @@ class UserController(
     private val getUsers: GetUsers,
     private val userQueryService: UserQueryService,
     private val getUserMentalDisorder: GetUserMentalDisorder,
-    private val createUser: CreateUser
+    private val createUser: CreateUser,
+    private val updateUser: UpdateUser,
+    private val changePassword: ChangePassword
 ) {
 
     @GetMapping
@@ -76,6 +80,33 @@ class UserController(
         @RequestParam("image", required = false) image: MultipartFile?
     ): ResponseEntity<Void> {
         createUser.execute(userRequest, image)
+        return ResponseEntity.ok().build()
+    }
+
+    @PutMapping("/{id}", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
+    @PreAuthorize("isAuthenticated()")
+    fun updateUser(
+        @PathVariable id: Int,
+        @RequestPart userRequest: UserRequest,
+        @RequestParam("image", required = false) image: MultipartFile?,
+        @AuthenticationPrincipal userDetails: LiraUserDetails
+    ): ResponseEntity<UserResponse> {
+        val authenticatedUser = userQueryService.getUserByEmail(userDetails.username)
+        val updated = updateUser.execute(id, authenticatedUser.id, userRequest, image)
+        return ResponseEntity.ok(updated.toResponse())
+    }
+
+    @PatchMapping("/{id}/password")
+    @PreAuthorize("isAuthenticated()")
+    fun changePassword(
+        @PathVariable id: Int,
+        @RequestBody body: Map<String, String>,
+        @AuthenticationPrincipal userDetails: LiraUserDetails
+    ): ResponseEntity<Void> {
+        val authenticatedUser = userQueryService.getUserByEmail(userDetails.username)
+        val currentPassword = body["currentPassword"] ?: return ResponseEntity.badRequest().build()
+        val newPassword = body["newPassword"] ?: return ResponseEntity.badRequest().build()
+        changePassword.execute(id, authenticatedUser.id, currentPassword, newPassword)
         return ResponseEntity.ok().build()
     }
 }

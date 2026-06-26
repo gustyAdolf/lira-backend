@@ -105,6 +105,49 @@ class JpaUserRepositoryAdapter(
         }
     }
 
+    override fun updateUser(user: User): User {
+        return when (user) {
+            is Patient -> {
+                val entity = jpaPatientRepository.findById(user.id)
+                    .orElseThrow { IllegalArgumentException("Patient not found: ${user.id}") }
+                entity.name = user.name
+                entity.telephone = user.telephone
+                entity.address = user.address
+                entity.profileImagePath = user.profileImagePath
+                entity.gender = user.gender
+                jpaPatientRepository.save(entity).toDomain()
+            }
+            is Therapist -> {
+                val entity = jpaTherapistRepository.findById(user.id)
+                    .orElseThrow { IllegalArgumentException("Therapist not found: ${user.id}") }
+                entity.name = user.name
+                entity.telephone = user.telephone
+                entity.address = user.address
+                entity.profileImagePath = user.profileImagePath
+                entity.licenseNumber = user.licenseNumber
+                jpaTherapistRepository.save(entity).toDomain()
+            }
+            is Company -> {
+                val entity = jpaCompanyRepository.findById(user.id)
+                    .orElseThrow { IllegalArgumentException("Company not found: ${user.id}") }
+                entity.name = user.name
+                entity.telephone = user.telephone
+                entity.address = user.address
+                entity.profileImagePath = user.profileImagePath
+                entity.cif = user.cif
+                entity.companyAddress = user.companyAddress
+                jpaCompanyRepository.save(entity).toDomain()
+            }
+        }
+    }
+
+    override fun updatePassword(userId: Int, hashedPassword: String) {
+        val entity = jpaUserRepository.findById(userId)
+            .orElseThrow { IllegalArgumentException("User not found: $userId") }
+        entity.password = hashedPassword
+        jpaUserRepository.save(entity)
+    }
+
     private fun saveUserCompany(companyId: Int, user: UserEntity) {
         val companyRef = jpaCompanyRepository.getReferenceById(companyId)
         jpaUserCompanyRepository.save(

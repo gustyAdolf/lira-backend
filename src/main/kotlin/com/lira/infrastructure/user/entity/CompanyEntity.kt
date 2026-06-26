@@ -11,10 +11,10 @@ import jakarta.persistence.Table
 class CompanyEntity(
 
     @Column(name = "cif")
-    val cif: String?,
+    var cif: String?,
 
     @Column(name = "company_address")
-    val companyAddress: String? = null
+    var companyAddress: String? = null
 ) : UserEntity()
 
 fun CompanyEntity.toDomain(): Company = Company(

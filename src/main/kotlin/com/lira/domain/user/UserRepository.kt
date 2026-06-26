@@ -13,4 +13,6 @@ interface UserRepository {
     fun findAvailabilityByCompanyId(companyId: Int): List<TherapistAvailability>
     fun findPatientsByCompanyId(companyId: Int): List<Patient>
     fun saveUser(user: User)
+    fun updateUser(user: User): User
+    fun updatePassword(userId: Int, hashedPassword: String)
 }
