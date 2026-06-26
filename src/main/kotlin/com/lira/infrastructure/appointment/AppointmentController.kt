@@ -133,7 +133,7 @@ class AppointmentController(
     }
 
     @PatchMapping("/{appointmentId}/status")
-    @PreAuthorize("hasAnyAuthority('ADMIN','THERAPIST','PATIENT')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','THERAPIST','PATIENT','COMPANY')")
     fun updateAppointmentStatus(
         @PathVariable appointmentId: Int,
         @RequestBody appointmentStatusUpdateRequest: UpdateAppointmentStatusRequest
@@ -143,7 +143,7 @@ class AppointmentController(
     }
 
     @DeleteMapping("/{appointmentId}")
-    @PreAuthorize("hasAnyAuthority('ADMIN','THERAPIST')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','THERAPIST','COMPANY')")
     fun deleteAppointment(@PathVariable("appointmentId") appointmentId: Int): ResponseEntity<Void> {
         deleteAppointment.execute(appointmentId)
         return ResponseEntity.ok().build()

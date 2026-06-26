@@ -26,7 +26,7 @@ class PlanSessionController(
     }
 
     @GetMapping("/plan/{planId}")
-    @PreAuthorize("hasAnyAuthority('ADMIN','THERAPIST')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','THERAPIST','COMPANY')")
     fun getSessionsByPlan(
         @PathVariable planId: Int
     ): ResponseEntity<List<PlanSessionResponse>> {

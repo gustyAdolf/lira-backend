@@ -45,7 +45,7 @@ class ProgressPlanController(
 ) {
 
     @GetMapping("/patient/{patientId}")
-    @PreAuthorize("hasAnyAuthority('ADMIN','THERAPIST','PATIENT')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','THERAPIST','PATIENT','COMPANY')")
     fun getProgressPlanByPatient(
         @PathVariable patientId: Int,
         @RequestParam(value = "therapistId") therapistId: Int

@@ -35,6 +35,11 @@ user:
     path: /Users/gusty/Documents/lira/images/users/
     preffix: /images/users/
 
+company:
+  image:
+    path: /Users/gusty/Documents/lira/images/companies/
+    preffix: /images/companies/
+
 logging:
   level:
     com.lira: INFO
