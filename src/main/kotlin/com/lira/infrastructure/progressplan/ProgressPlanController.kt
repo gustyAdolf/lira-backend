@@ -48,7 +48,7 @@ class ProgressPlanController(
     @PreAuthorize("hasAnyAuthority('ADMIN','THERAPIST','PATIENT','COMPANY')")
     fun getProgressPlanByPatient(
         @PathVariable patientId: Int,
-        @RequestParam(value = "therapistId") therapistId: Int
+        @RequestParam(value = "therapistId", required = false) therapistId: Int?
     ): ResponseEntity<List<ProgressPlanResponse>> {
         return ResponseEntity.ok(getProgressPlanByPatientId.execute(patientId, therapistId))
     }

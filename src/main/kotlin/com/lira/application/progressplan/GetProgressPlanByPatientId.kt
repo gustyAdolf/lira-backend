@@ -11,8 +11,11 @@ import org.springframework.transaction.annotation.Transactional
 class GetProgressPlanByPatientId(
     private val progressPlanRepository: ProgressPlanRepository,
 ) {
-    fun execute(patientId: Int, therapistId: Int): List<ProgressPlanResponse> {
-        return progressPlanRepository.getProgressPlanByPatientId(patientId, therapistId)
-            .map { it.toResponse() }
+    fun execute(patientId: Int, therapistId: Int?): List<ProgressPlanResponse> {
+        val plans = if (therapistId == null)
+            progressPlanRepository.getProgressPlansByPatientId(patientId)
+        else
+            progressPlanRepository.getProgressPlanByPatientId(patientId, therapistId)
+        return plans.map { it.toResponse() }
     }
 }

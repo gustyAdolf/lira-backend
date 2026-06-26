@@ -33,6 +33,9 @@ class GetTherapistsAvailability(
                 therapistId = it.id,
                 therapistName = it.name,
                 therapistEmail = it.email,
+                telephone = it.telephone,
+                licenseNumber = it.licenseNumber,
+                profileImagePath = it.profileImagePath,
                 futureAppointmentsCount = appointmentCounts[it.id] ?: 0,
                 nextAppointments = getNextAppointmentsForTherapist(it.id)
             )
