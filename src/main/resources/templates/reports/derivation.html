@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <style>
+    @page { size: A4; margin: 15mm; }
+    body { font-family: 'Helvetica', 'Arial', sans-serif; color: #333; line-height: 1.4; font-size: 11px; }
+
+    /* Estilos de Tablas para Maquetación */
+    .table-full { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+    .header-cell { vertical-align: top; padding-bottom: 10px; border-bottom: 1px solid #2E5BB7; }
+    .title { color: #2E5BB7; font-size: 18px; text-transform: uppercase; font-weight: bold; margin-bottom: 5px; }
+
+    /* Secciones */
+    .section-header { background-color: #f2f5fa; padding: 5px 8px; font-weight: bold; color: #2E5BB7; border-left: 3px solid #2E5BB7; margin: 15px 0 8px 0; text-transform: uppercase; }
+    .data-label { font-weight: bold; color: #555; width: 180px; }
+    .data-value { padding-left: 5px; }
+
+    /* Listas y texto */
+    .content-block { padding-left: 5px; margin-bottom: 10px; text-align: justify; }
+    .footer { margin-top: 30px; padding-top: 10px; border-top: 0.5px solid #ccc; font-size: 9px; color: #777; text-align: justify; }
+    .signature-box { margin-top: 40px; text-align: center; width: 250px; float: right; }
+  </style>
+</head>
+<body>
+
+<table class="table-full header-cell">
+  <tr>
+    <td width="60%">
+      <div class="title" th:text="${centro_nombre}">CENTRO DE SALUD LIRA</div>
+      <div>NIF/CIF: <span th:text="${centro_nif}">B12345678</span></div>
+      <div th:if="${centro_registro_sanitario}">Reg. Sanitario: <span th:text="${centro_registro_sanitario}">-</span></div>
+      <div th:text="${centro_direccion}">Calle Ejemplo 123, Madrid</div>
+      <div>Tel: <span th:text="${centro_telefono}">900000000</span> · Email: <span th:text="${centro_email}">contacto@lira.com</span></div>
+      <div th:text="${centro_web}">www.lira-clinica.com</div>
+    </td>
+    <td width="40%" style="text-align: right;">
+      <div style="font-weight: bold;">Profesional: <span th:text="${report.therapist.name}">Nombre Apellidos</span></div>
+      <div>Col. Nº: <span th:text="${report.therapist.licenseNumber}">00000</span></div>
+      <div style="margin-top: 10px;">
+        <span th:text="${ciudad ?: 'Madrid'}">Madrid</span>,
+        <span th:text="${#temporals.format(report.createdAt, 'd ''de'' MMMM ''de'' yyyy')}">18 de enero de 2026</span>
+      </div>
+    </td>
+  </tr>
+</table>
+
+<div class="section-header">Datos del/de la Paciente</div>
+<table class="table-full">
+  <tr>
+    <td class="data-label">Nombre y apellidos:</td>
+    <td class="data-value" th:text="${report.patient.name}">Nombre Paciente</td>
+  </tr>
+  <tr>
+    <td class="data-label">DNI/NIE/Pasaporte:</td>
+    <td class="data-value">00000000X (MOCK)</td>
+  </tr>
+  <tr>
+    <td class="data-label">Fecha de nacimiento:</td>
+    <td class="data-value">01/01/1990</td>
+  </tr>
+  <tr th:if="${report.patient.email}">
+    <td class="data-label">Contacto:</td>
+    <td class="data-value" th:text="${report.patient.email}">email@paciente.com</td>
+  </tr>
+</table>
+
+<div style="font-size: 14px; font-weight: bold; margin: 15px 0; border-bottom: 1px solid #eee; padding-bottom: 5px;">
+  Asunto: Derivación a <span th:text="${nombreDestino}">Destinatario</span>
+  (<span th:text="${especialidadDestino}">Especialidad</span>)
+</div>
+
+<div class="section-header">Motivo de la derivación</div>
+<div class="content-block" th:text="${motivoDerivacion}">Texto motivo...</div>
+
+<div class="section-header">Resumen clínico relevante</div>
+<div class="content-block">
+  <p th:if="${resumenClinico['inicioSintomas']}">
+    <strong>· Inicio de síntomas / demanda:</strong>
+    <span th:text="${resumenClinico['inicioSintomas']}"></span>
+  </p>
+
+  <p th:if="${resumenClinico['sintomasActuales']}">
+    <strong>· Síntomas/áreas de dificultad actuales:</strong>
+    <span th:text="${resumenClinico['sintomasActuales']}"></span>
+  </p>
+
+  <p th:if="${resumenClinico['factoresMantenimiento']}">
+    <strong>· Factores de mantenimiento/estresores:</strong>
+    <span th:text="${resumenClinico['factoresMantenimiento']}"></span>
+  </p>
+
+  <p th:if="${resumenClinico.containsKey('diagnostico')}">
+    <strong>· Diagnóstico/hipótesis clínica:</strong>
+    <span th:text="${resumenClinico['diagnostico']}"></span>
+  </p>
+</div>
+
+<div th:if="${intervencion_frecuencia_n}" class="section-header">Intervención realizada hasta la fecha</div>
+<div th:if="${intervencion_frecuencia_n}" class="content-block">
+  <p><strong>· Frecuencia y nº sesiones:</strong> <span th:text="${intervencion_frecuencia_n}"></span></p>
+  <p><strong>· Técnicas/Modelos aplicados:</strong> <span th:text="${intervencion_tecnicas}"></span></p>
+  <p><strong>· Evolución/respuesta:</strong> <span th:text="${intervencion_evolucion}"></span></p>
+</div>
+
+<div class="section-header">Objetivo de la derivación / Petición concreta</div>
+<div class="content-block">
+  <ul style="margin: 0; padding-left: 20px;">
+    <li th:each="obj : ${objetivos}" th:text="${obj.values()[0]}"></li>
+  </ul>
+</div>
+
+<div th:if="${riesgoActual}" class="section-header">Riesgo actual</div>
+<div th:if="${riesgoActual}" class="content-block" th:text="${riesgoActual}"></div>
+
+<div class="section-header">Coordinación propuesta</div>
+<div class="content-block" th:text="${coordinacionPropuesta ?: 'No se requiere coordinación activa inmediata.'}"></div>
+
+<div style="margin-top: 20px; font-style: italic; color: #666; font-size: 10px;">
+  Confidencialidad: La información clínica se comparte exclusivamente con el fin de facilitar la continuidad asistencial y con el consentimiento del/de la paciente.
+</div>
+
+<div class="signature-box">
+  <div style="border-top: 1px solid #333; padding-top: 10px;">
+    <div th:text="${report.therapist.name}" style="font-weight: bold; text-transform: uppercase;">NOMBRE PROFESIONAL</div>
+    <div>Nº Col. <span th:text="${report.therapist.licenseNumber}">00000</span></div>
+    <div th:text="${centro_nombre}">Nombre del Centro</div>
+  </div>
+</div>
+
+<div class="footer" style="clear: both;">
+  <p><strong>Protección de datos y confidencialidad:</strong> Este documento contiene información de salud de carácter confidencial. Su uso está limitado a la finalidad para la que se emite. Rogamos custodiarlo adecuadamente y no difundirlo sin autorización del/de la paciente.</p>
+</div>
+
+</body>
+</html>

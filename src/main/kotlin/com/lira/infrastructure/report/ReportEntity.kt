@@ -40,14 +40,25 @@ data class ReportEntity(
 )
 
 fun ReportEntity.toDomain(): Report {
-    // En toDomain(), usamos el ID de la entidad relacionada
     val reportType = ReportTypeEnum.fromId(this.reportType.id)
         ?: throw IllegalStateException("Tipo de informe ID ${this.reportType.id} no reconocido.")
 
     return Report(
         id = this.id,
-        therapist = Therapist(id = this.therapist.id),
-        patient = Patient(id = this.patient.id),
+        therapist = Therapist(
+            id = this.therapist.id,
+            name = this.therapist.name,
+            email = this.therapist.email,
+            telephone = this.therapist.telephone,
+            address = this.therapist.address
+        ),
+        patient = Patient(
+            id = this.patient.id,
+            name = this.patient.name,
+            email = this.patient.email,
+            telephone = this.patient.telephone,
+            address = this.patient.address
+        ),
         type = reportType,
         data = this.data,
         createdAt = this.createdAt

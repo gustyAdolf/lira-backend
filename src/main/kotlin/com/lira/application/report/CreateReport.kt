@@ -13,24 +13,11 @@ import org.springframework.stereotype.Service
 
 @Service
 class CreateReport(
-    // Inyección del puerto (la infraestructura implementa esto)
-    private val reportRepository: ReportRepository,
-    // Spring inyecta todos los validadores que implementan ReportDataValidator
-    allValidators: List<ReportDataValidator>
+    private val reportRepository: ReportRepository
 ) {
-    // Mapeamos los validadores por ReportType para un acceso rápido
-    private val validatorMap = allValidators.associateBy { it.supports() }
-
     fun execute(request: ReportRequest): Report {
         val reportType = ReportTypeEnum.fromId(request.reportTypeId)
             ?: throw IllegalArgumentException("Tipo de informe ID ${request.reportTypeId} no válido.")
-
-        // 1. Despachar la validación específica
-        /*val validator = validatorMap[reportType]
-            ?: throw IllegalStateException("No hay validador implementado para el tipo: ${reportType.name}")
-
-        // Aquí se ejecuta la validación de negocio (campos obligatorios, formatos, etc.)
-        validator.validate(request.reportData)*/
 
 
         // 3. Guardar usando el Puerto
