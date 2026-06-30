@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <style>
+    @page { size: A4; margin: 18mm 18mm 18mm 18mm; }
+    body { font-family: Arial, Helvetica, sans-serif; font-size: 10.5px; color: #222; line-height: 1.5; margin: 0; }
+    .header { border-bottom: 2px solid #2E5BB7; padding-bottom: 8px; margin-bottom: 14px; }
+    .center-name { color: #2E5BB7; font-size: 15px; font-weight: bold; }
+    .center-sub { font-size: 9.5px; color: #555; margin-top: 2px; }
+    .report-title { text-align: center; margin-bottom: 12px; }
+    .report-title h1 { font-size: 14px; color: #2E5BB7; text-transform: uppercase; margin: 0 0 2px 0; }
+    .report-title .fecha { font-size: 9px; color: #777; }
+    .info-grid { display: table; width: 100%; background: #f7f9ff; border: 1px solid #dde3f0; padding: 8px; margin-bottom: 12px; }
+    .info-col { display: table-cell; vertical-align: top; width: 50%; padding-right: 8px; }
+    .field-lbl { font-size: 8.5px; color: #2E5BB7; text-transform: uppercase; font-weight: bold; margin-top: 4px; }
+    .field-val { font-size: 10px; margin-bottom: 2px; }
+    .sec-title { background: #2E5BB7; color: #fff; padding: 3px 8px; font-size: 10px; font-weight: bold; margin: 10px 0 4px 0; }
+    .sec-body { font-size: 10px; text-align: justify; padding: 0 2px; }
+    .sec-body p { margin: 2px 0; }
+    .obj-list { padding-left: 12px; margin: 0; }
+    .obj-list li { margin-bottom: 2px; }
+    .confidential { margin-top: 10px; font-size: 8.5px; color: #777; font-style: italic; }
+    .signature { margin-top: 50px; text-align: right; }
+    .sig-block { display: inline-block; text-align: center; border-top: 1px solid #333; padding-top: 4px; min-width: 200px; font-size: 9.5px; }
+    .footer { margin-top: 30px; border-top: 1px solid #ddd; padding-top: 6px; font-size: 8.5px; color: #999; text-align: center; }
+  </style>
+</head>
+<body>
+
+  <!-- CABECERA -->
+  <div class="header">
+    <div class="center-name" th:text="${centro.nombre}">Centro Psicológico</div>
+    <div class="center-sub">
+      NIF/CIF: <span th:text="${centro.nif}">—</span>&#160;&#160;|&#160;&#160;<span th:text="${centro.direccion}">—</span>
+    </div>
+    <div class="center-sub">
+      Tel: <span th:text="${centro.telefono}">—</span>&#160;&#160;|&#160;&#160;Email: <span th:text="${centro.email}">—</span>
+    </div>
+  </div>
+
+  <!-- TÍTULO -->
+  <div class="report-title">
+    <h1>Informe de Derivación</h1>
+    <div class="fecha">Fecha de emisión: <span th:text="${fechaEmision}">—</span></div>
+  </div>
+
+  <!-- INFO PACIENTE / DESTINO -->
+  <div class="info-grid">
+    <div class="info-col">
+      <div class="field-lbl">Paciente</div>
+      <div class="field-val" th:text="${paciente.nombre}">—</div>
+      <div class="field-lbl">DNI / NIE / Pasaporte</div>
+      <div class="field-val" th:text="${paciente.documento}">—</div>
+      <div class="field-lbl">Fecha de nacimiento</div>
+      <div class="field-val" th:text="${paciente.fechaNacimiento}">—</div>
+      <div class="field-lbl">Contacto</div>
+      <div class="field-val" th:text="${paciente.contacto}">—</div>
+    </div>
+    <div class="info-col">
+      <div class="field-lbl">Destinatario</div>
+      <div class="field-val" th:text="${datos['destinoNombre']}">—</div>
+      <div class="field-lbl">Especialidad</div>
+      <div class="field-val" th:text="${datos['destinoEspecialidad']}">—</div>
+    </div>
+  </div>
+
+  <!-- MOTIVO -->
+  <div class="sec-title">Motivo de la Derivación</div>
+  <div class="sec-body">
+    <p th:text="${datos['motivoDerivacion']}">—</p>
+  </div>
+
+  <!-- RESUMEN CLÍNICO -->
+  <div class="sec-title">Resumen Clínico</div>
+  <div class="sec-body">
+    <p><strong>Inicio de síntomas / demanda:</strong> <span th:text="${datos['resumenInicio']}">—</span></p>
+    <p><strong>Síntomas / áreas de dificultad actuales:</strong> <span th:text="${datos['resumenSintomas']}">—</span></p>
+    <p><strong>Factores de mantenimiento / estresores:</strong> <span th:text="${datos['resumenFactores']}">—</span></p>
+    <p><strong>Diagnóstico / hipótesis clínica:</strong> <span th:text="${datos['diagnosticoHipotesis']}">—</span></p>
+  </div>
+
+  <!-- INTERVENCIÓN -->
+  <div class="sec-title">Intervención Realizada hasta la Fecha</div>
+  <div class="sec-body">
+    <p><strong>Frecuencia y nº de sesiones:</strong> <span th:text="${datos['intervencionFrecuencia']}">—</span></p>
+    <p><strong>Técnicas / Modelos aplicados:</strong> <span th:text="${datos['intervencionTecnicas']}">—</span></p>
+    <p><strong>Evolución / Respuesta:</strong> <span th:text="${datos['intervencionEvolucion']}">—</span></p>
+  </div>
+
+  <!-- OBJETIVOS -->
+  <div class="sec-title">Objetivo de la Derivación</div>
+  <div class="sec-body">
+    <ul class="obj-list">
+      <li th:each="obj : ${datos['objetivos']}" th:if="${obj != null and !#strings.isEmpty(obj)}" th:text="${obj}">—</li>
+    </ul>
+  </div>
+
+  <!-- RIESGO ACTUAL (condicional) -->
+  <div th:if="${datos['riesgoActual'] != null and !#strings.isEmpty(datos['riesgoActual'])}">
+    <div class="sec-title">Riesgo Actual</div>
+    <div class="sec-body"><p th:text="${datos['riesgoActual']}">—</p></div>
+  </div>
+
+  <!-- COORDINACIÓN -->
+  <div th:if="${datos['coordinacionPropuesta'] != null and !#strings.isEmpty(datos['coordinacionPropuesta'])}">
+    <div class="sec-title">Coordinación Propuesta</div>
+    <div class="sec-body"><p th:text="${datos['coordinacionPropuesta']}">—</p></div>
+  </div>
+
+  <!-- DOCUMENTACIÓN ADJUNTA (condicional) -->
+  <div th:if="${datos['documentacionAdjunta'] != null and !#strings.isEmpty(datos['documentacionAdjunta'])}">
+    <div class="sec-title">Documentación Adjunta</div>
+    <div class="sec-body"><p th:text="${datos['documentacionAdjunta']}">—</p></div>
+  </div>
+
+  <div class="confidential">
+    La información clínica se comparte exclusivamente con el fin de facilitar la continuidad asistencial
+    y con el consentimiento expreso del/de la paciente.
+  </div>
+
+  <!-- FIRMA -->
+  <div class="signature">
+    <div class="sig-block">
+      <div th:text="${profesional.nombre}">—</div>
+      <div>Nº Col. <span th:text="${profesional.colegiado}">—</span></div>
+      <div th:text="${centro.nombre}">—</div>
+    </div>
+  </div>
+
+  <!-- PIE -->
+  <div class="footer">
+    <div>Documento confidencial — uso restringido al destinatario indicado.</div>
+    <div>Generado automáticamente por Lira · Gestión Clínica</div>
+  </div>
+
+</body>
+</html>

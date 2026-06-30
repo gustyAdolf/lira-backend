@@ -15,6 +15,9 @@ class PatientEntity(
     @Column(name = "gender")
     var gender: String? = null,
 
+    @Column(name = "dni")
+    var dni: String? = null,
+
     @OneToMany(mappedBy = "patient", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
     val userDisorders: List<UserDisorderEntity> = emptyList()
 ) : UserEntity()
