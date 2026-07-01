@@ -40,6 +40,11 @@ company:
     path: /Users/gusty/Documents/lira/images/companies/
     preffix: /images/companies/
 
+groq:
+  api-key: ${GROQ_API_KEY:}
+  whisper-model: whisper-large-v3
+  llm-model: llama-3.3-70b-versatile
+
 logging:
   level:
     com.lira: INFO

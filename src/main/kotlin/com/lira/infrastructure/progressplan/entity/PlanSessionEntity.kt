@@ -26,6 +26,12 @@ class PlanSessionEntity(
     @Column(name = "notes")
     val notes: String? = null,
 
+    @Column(name = "transcript", columnDefinition = "TEXT")
+    val transcript: String? = null,
+
+    @Column(name = "ai_summary", columnDefinition = "TEXT")
+    val aiSummary: String? = null,
+
     @Column(name = "created_at", nullable = false)
     val createdAt: LocalDateTime = LocalDateTime.now(),
 )
@@ -37,6 +43,8 @@ fun PlanSessionEntity.toDomain() = PlanSession(
     appointmentId = appointmentId,
     sessionDate = sessionDate,
     notes = notes,
+    transcript = transcript,
+    aiSummary = aiSummary,
     createdAt = createdAt
 )
 
@@ -46,5 +54,7 @@ fun PlanSession.toEntity() = PlanSessionEntity(
     appointmentId = appointmentId,
     sessionDate = sessionDate,
     notes = notes,
+    transcript = transcript,
+    aiSummary = aiSummary,
     createdAt = createdAt
 )

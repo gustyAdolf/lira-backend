@@ -65,6 +65,13 @@ class GlobalExceptionHandler {
         return ApiResponse(ApiResponseStatus.FAILURE, e.message ?: "La cita no se puede editar en su estado actual")
     }
 
+    @ExceptionHandler(NoSuchElementException::class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    fun handleNotFound(e: NoSuchElementException): ApiResponse<Unit> {
+        log.warn("Resource not found: ${e.message}")
+        return ApiResponse(ApiResponseStatus.FAILURE, e.message ?: "Recurso no encontrado")
+    }
+
     @ExceptionHandler(Exception::class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     fun handleGeneric(e: Exception): ApiResponse<Unit> {

@@ -9,5 +9,7 @@ data class PlanSession(
     val appointmentId: Int? = null,
     val sessionDate: LocalDateTime = LocalDateTime.now(),
     val notes: String? = null,
+    val transcript: String? = null,
+    val aiSummary: String? = null,
     val createdAt: LocalDateTime = LocalDateTime.now()
 )

@@ -16,6 +16,10 @@ class JpaPlanSessionRepositoryAdapter(
         return jpaPlanSessionRepository.save(session.toEntity()).toDomain()
     }
 
+    override fun findById(id: Int): PlanSession? {
+        return jpaPlanSessionRepository.findById(id).orElse(null)?.toDomain()
+    }
+
     override fun findByPlanId(planId: Int): List<PlanSession> {
         return jpaPlanSessionRepository.findByPlanIdOrderBySessionDateDesc(planId).map { it.toDomain() }
     }
