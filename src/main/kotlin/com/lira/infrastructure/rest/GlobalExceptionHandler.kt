@@ -2,6 +2,7 @@ package com.lira.infrastructure.rest
 
 import com.lira.domain.exceptions.AppointmentException
 import com.lira.domain.exceptions.CheckinException
+import com.lira.domain.exceptions.PatientTaskException
 import com.lira.domain.exceptions.ScheduleException
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -85,6 +86,13 @@ class GlobalExceptionHandler {
     fun handleAppointmentOverlap(e: ScheduleException.AppointmentOverlap): ApiResponse<Unit> {
         log.warn("Schedule validation: ${e.message}")
         return ApiResponse(ApiResponseStatus.FAILURE, e.message ?: "El terapeuta ya tiene una cita en ese horario")
+    }
+
+    @ExceptionHandler(PatientTaskException.InvalidEntryTarget::class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    fun handleInvalidPatientTaskEntryTarget(e: PatientTaskException.InvalidEntryTarget): ApiResponse<Unit> {
+        log.warn("Invalid patient task entry: ${e.message}")
+        return ApiResponse(ApiResponseStatus.FAILURE, e.message ?: "Entrada de diario inválida")
     }
 
     @ExceptionHandler(Exception::class)

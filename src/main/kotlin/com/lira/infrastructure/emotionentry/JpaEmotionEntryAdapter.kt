@@ -15,9 +15,9 @@ class JpaEmotionEntryAdapter(
     private val entityManager: EntityManager
 ) : EmotionEntryRepository {
 
-    override fun save(emotion: EmotionEntry) {
+    override fun save(emotion: EmotionEntry): EmotionEntry {
         val patientEntity = entityManager.getReference(PatientEntity::class.java, emotion.patient.id)
-        jpaEmotionRepository.save(emotion.toEntity(patientEntity))
+        return jpaEmotionRepository.save(emotion.toEntity(patientEntity)).toDomain()
     }
 
     override fun findByUserId(

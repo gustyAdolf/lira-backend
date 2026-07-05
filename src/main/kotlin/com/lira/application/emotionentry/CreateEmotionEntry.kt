@@ -1,5 +1,6 @@
 package com.lira.application.emotionentry
 
+import com.lira.domain.emotionentry.EmotionEntry
 import com.lira.domain.emotionentry.EmotionEntryRepository
 import com.lira.infrastructure.emotionentry.dto.EmotionEntryRequest
 import com.lira.infrastructure.emotionentry.dto.toDomain
@@ -11,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional
 class CreateEmotionEntry(
     private val emotionEntryRepository: EmotionEntryRepository
 ) {
-    fun execute(emotionEntry: EmotionEntryRequest) {
-        emotionEntryRepository.save(emotionEntry.toDomain())
+    fun execute(emotionEntry: EmotionEntryRequest): EmotionEntry {
+        return emotionEntryRepository.save(emotionEntry.toDomain())
     }
 }
