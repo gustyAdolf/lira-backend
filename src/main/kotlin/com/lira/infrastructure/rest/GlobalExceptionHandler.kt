@@ -2,6 +2,7 @@ package com.lira.infrastructure.rest
 
 import com.lira.domain.exceptions.AppointmentException
 import com.lira.domain.exceptions.CheckinException
+import com.lira.domain.exceptions.ScheduleException
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.AccessDeniedException
@@ -63,6 +64,27 @@ class GlobalExceptionHandler {
     fun handlerAppointmentNotEditable(e: AppointmentException.NotEditable): ApiResponse<Unit> {
         log.warn("Appointment not editable: ${e.message}")
         return ApiResponse(ApiResponseStatus.FAILURE, e.message ?: "La cita no se puede editar en su estado actual")
+    }
+
+    @ExceptionHandler(ScheduleException.TherapistNotAvailableDay::class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    fun handleTherapistNotAvailableDay(e: ScheduleException.TherapistNotAvailableDay): ApiResponse<Unit> {
+        log.warn("Schedule validation: ${e.message}")
+        return ApiResponse(ApiResponseStatus.FAILURE, e.message ?: "El terapeuta no trabaja ese día")
+    }
+
+    @ExceptionHandler(ScheduleException.SessionExceedsWorkingHours::class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    fun handleSessionExceedsWorkingHours(e: ScheduleException.SessionExceedsWorkingHours): ApiResponse<Unit> {
+        log.warn("Schedule validation: ${e.message}")
+        return ApiResponse(ApiResponseStatus.FAILURE, e.message ?: "La sesión terminaría fuera del horario del terapeuta")
+    }
+
+    @ExceptionHandler(ScheduleException.AppointmentOverlap::class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    fun handleAppointmentOverlap(e: ScheduleException.AppointmentOverlap): ApiResponse<Unit> {
+        log.warn("Schedule validation: ${e.message}")
+        return ApiResponse(ApiResponseStatus.FAILURE, e.message ?: "El terapeuta ya tiene una cita en ese horario")
     }
 
     @ExceptionHandler(Exception::class)

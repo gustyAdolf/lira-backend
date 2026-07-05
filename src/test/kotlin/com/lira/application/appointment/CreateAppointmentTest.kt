@@ -3,6 +3,8 @@ package com.lira.application.appointment
 import com.lira.domain.appointment.Appointment
 import com.lira.domain.appointment.AppointmentRepository
 import com.lira.domain.appointment.AppointmentType
+import com.lira.domain.therapistschedule.TherapistSchedule
+import com.lira.domain.therapistschedule.TherapistScheduleRepository
 import com.lira.domain.user.Patient
 import com.lira.domain.user.Therapist
 import com.lira.domain.appointment.AppointmentStatus
@@ -14,18 +16,33 @@ import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.springframework.data.domain.Sort
 import java.math.BigDecimal
 import java.time.LocalDateTime
+import java.time.LocalTime
 
 class CreateAppointmentTest {
 
     private lateinit var appointmentRepository: AppointmentRepository
+    private lateinit var scheduleRepository: TherapistScheduleRepository
     private lateinit var createAppointment: CreateAppointment
+
+    private val allDaySchedule = (1..7).map { dow ->
+        TherapistSchedule(
+            therapistId = 6,
+            dayOfWeek = dow,
+            startTime = LocalTime.of(8, 0),
+            endTime = LocalTime.of(22, 0),
+        )
+    }
 
     @BeforeEach
     fun setUp() {
         appointmentRepository = mockk()
-        createAppointment = CreateAppointment(appointmentRepository)
+        scheduleRepository = mockk()
+        every { scheduleRepository.findByTherapistId(any()) } returns allDaySchedule
+        every { appointmentRepository.getTherapistAppointments(any(), any(), any(), any<Sort>()) } returns emptyList()
+        createAppointment = CreateAppointment(appointmentRepository, scheduleRepository)
     }
 
     @Test
