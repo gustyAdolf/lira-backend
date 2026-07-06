@@ -45,7 +45,7 @@ data class ProgressPlanEntity(
     val objectives: MutableList<ObjectiveEntity> = mutableListOf()
 )
 
-fun ProgressPlanEntity.toDomain(statsMap: Map<Int, Triple<Int, Int, Int>> = emptyMap()): ProgressPlan =
+fun ProgressPlanEntity.toDomain(): ProgressPlan =
     ProgressPlan(
         id = this.id,
         patient = this.patient.toDomain(),
@@ -54,7 +54,7 @@ fun ProgressPlanEntity.toDomain(statsMap: Map<Int, Triple<Int, Int, Int>> = empt
         description = this.description,
         totalProgress = this.totalProgress,
         mentalDisorderId = this.mentalDisorderId,
-        objectives = this.objectives.map { it.toDomain(statsMap) },
+        objectives = this.objectives.map { it.toDomain() },
         createdAt = this.createdAt,
         updatedAt = this.updatedAt
     )

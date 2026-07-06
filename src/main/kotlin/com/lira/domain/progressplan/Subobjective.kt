@@ -14,5 +14,6 @@ data class Subobjective(
     var currentValue: Int = 0,
     var currentSuccess: Int = 0,
     var currentFail: Int = 0,
+    var isCompleted: Boolean = false,
     val createdAt: LocalDateTime = LocalDateTime.now()
 )

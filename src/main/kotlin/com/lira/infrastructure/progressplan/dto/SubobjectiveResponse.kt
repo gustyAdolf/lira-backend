@@ -16,6 +16,7 @@ data class SubobjectiveResponse(
     val currentValue: Int,
     val currentSuccess: Int,
     val currentFail: Int,
+    val isCompleted: Boolean,
     val createdAt: LocalDateTime
 )
 
@@ -32,6 +33,7 @@ fun Subobjective.toResponse(): SubobjectiveResponse {
         currentValue = currentValue,
         currentSuccess = currentSuccess,
         currentFail = currentFail,
+        isCompleted = isCompleted,
         createdAt = createdAt
     )
 }

@@ -2,7 +2,9 @@ package com.lira.infrastructure.progressplan
 
 import com.lira.application.progressplan.AddObjectiveToPlan
 import com.lira.application.progressplan.AddSubobjectiveToPlan
+import com.lira.application.progressplan.CompleteSubobjective
 import com.lira.application.progressplan.CreateProgressPlan
+import com.lira.application.progressplan.GetStandaloneEntries
 import com.lira.application.progressplan.DeleteObjective
 import com.lira.application.progressplan.DeleteSubobjective
 import com.lira.application.progressplan.GetProgressPlanByPatientId
@@ -11,6 +13,8 @@ import com.lira.application.progressplan.GetSubobjectiveEntries
 import com.lira.application.progressplan.RegisterProgress
 import com.lira.application.progressplan.UpdateObjective
 import com.lira.application.progressplan.UpdateSubobjective
+import com.lira.application.progressplan.UpdateSubobjectiveValues
+import com.lira.infrastructure.progressplan.dto.CompleteSubobjectiveRequest
 import com.lira.infrastructure.progressplan.dto.ProgressPlanRequest
 import com.lira.infrastructure.progressplan.dto.ProgressPlanResponse
 import com.lira.infrastructure.progressplan.dto.SubobjectiveEntryRequest
@@ -19,6 +23,7 @@ import com.lira.infrastructure.progressplan.dto.ObjectiveRequest
 import com.lira.infrastructure.progressplan.dto.SubobjectiveRequest
 import com.lira.infrastructure.progressplan.dto.UpdateObjectiveRequest
 import com.lira.infrastructure.progressplan.dto.UpdateSubobjectiveRequest
+import com.lira.infrastructure.progressplan.dto.UpdateSubobjectiveValuesRequest
 import com.lira.infrastructure.progressplan.dto.toDomain
 import com.lira.infrastructure.progressplan.dto.toEntryResponse
 import com.lira.infrastructure.progressplan.dto.toResponse
@@ -41,7 +46,10 @@ class ProgressPlanController(
     private val deleteObjective: DeleteObjective,
     private val deleteSubobjective: DeleteSubobjective,
     private val addObjectiveToPlan: AddObjectiveToPlan,
-    private val addSubobjectiveToPlan: AddSubobjectiveToPlan
+    private val addSubobjectiveToPlan: AddSubobjectiveToPlan,
+    private val completeSubobjective: CompleteSubobjective,
+    private val updateSubobjectiveValues: UpdateSubobjectiveValues,
+    private val getStandaloneEntries: GetStandaloneEntries
 ) {
 
     @GetMapping("/patient/{patientId}")
@@ -137,4 +145,29 @@ class ProgressPlanController(
         @RequestBody request: SubobjectiveRequest
     ): ResponseEntity<ProgressPlanResponse> =
         ResponseEntity.ok(addSubobjectiveToPlan.execute(objectiveId, request.toDomain()))
+
+    @PostMapping("subobjective/{subId}/complete")
+    @PreAuthorize("hasAnyAuthority('ADMIN','THERAPIST')")
+    fun completeSubobjective(
+        @PathVariable subId: Int,
+        @RequestBody request: CompleteSubobjectiveRequest
+    ): ResponseEntity<ProgressPlanResponse> =
+        ResponseEntity.ok(completeSubobjective.execute(subId, request.objectiveId, request.completed))
+
+    @PatchMapping("subobjective/{subId}/current-values")
+    @PreAuthorize("hasAnyAuthority('ADMIN','THERAPIST')")
+    fun updateSubobjectiveValues(
+        @PathVariable subId: Int,
+        @RequestBody request: UpdateSubobjectiveValuesRequest
+    ): ResponseEntity<ProgressPlanResponse> =
+        ResponseEntity.ok(updateSubobjectiveValues.execute(
+            subId, request.objectiveId, request.currentValue, request.currentSuccess, request.currentFail
+        ))
+
+    @GetMapping("plan/{planId}/standalone-entries")
+    @PreAuthorize("hasAnyAuthority('ADMIN','THERAPIST')")
+    fun getStandaloneEntries(
+        @PathVariable planId: Int
+    ): ResponseEntity<List<SubobjectiveEntryResponse>> =
+        ResponseEntity.ok(getStandaloneEntries.execute(planId).map { it.toEntryResponse() })
 }

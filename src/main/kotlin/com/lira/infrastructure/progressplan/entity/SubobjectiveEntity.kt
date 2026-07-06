@@ -34,6 +34,18 @@ class SubobjectiveEntity(
     @Column(name = "current_progress")
     val currentProgress: Double,
 
+    @Column(name = "current_value")
+    val currentValue: Int = 0,
+
+    @Column(name = "current_success_count")
+    val currentSuccessCount: Int = 0,
+
+    @Column(name = "current_fail_count")
+    val currentFailCount: Int = 0,
+
+    @Column(name = "is_completed")
+    val isCompleted: Boolean = false,
+
     @Column(name = "created_at")
     val createdAt: LocalDateTime = LocalDateTime.now()
 ) {
@@ -42,11 +54,7 @@ class SubobjectiveEntity(
     lateinit var objective: ObjectiveEntity
 }
 
-fun SubobjectiveEntity.toDomain(
-    currentValue: Int = 0,
-    currentSuccess: Int = 0,
-    currentFail: Int = 0
-): Subobjective =
+fun SubobjectiveEntity.toDomain(): Subobjective =
     Subobjective(
         id = id,
         title = title,
@@ -57,8 +65,9 @@ fun SubobjectiveEntity.toDomain(
         targetFail = targetFail,
         currentProgress = currentProgress,
         currentValue = currentValue,
-        currentSuccess = currentSuccess,
-        currentFail = currentFail,
+        currentSuccess = currentSuccessCount,
+        currentFail = currentFailCount,
+        isCompleted = isCompleted,
         createdAt = createdAt
     )
 
@@ -72,5 +81,9 @@ fun Subobjective.toEntity(): SubobjectiveEntity =
         targetSuccess = targetSuccess,
         targetFail = targetFail,
         currentProgress = currentProgress,
+        currentValue = currentValue,
+        currentSuccessCount = currentSuccess,
+        currentFailCount = currentFail,
+        isCompleted = isCompleted,
         createdAt = createdAt
     )

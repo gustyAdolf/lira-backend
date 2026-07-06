@@ -47,4 +47,16 @@ interface ProgressPlanRepository {
     fun updateTotalProgress(planId: Int, progress: Double)
 
     fun findEntriesByPlanSessionId(planSessionId: Int): List<SubobjectiveEntry>
+
+    fun getStandaloneEntriesByPlanId(planId: Int): List<SubobjectiveEntry>
+
+    fun completeSubobjective(subobjectiveId: Int, objectiveId: Int, completed: Boolean)
+
+    fun updateSubobjectiveValues(
+        subobjectiveId: Int,
+        objectiveId: Int,
+        currentValue: Int?,
+        currentSuccess: Int?,
+        currentFail: Int?
+    )
 }

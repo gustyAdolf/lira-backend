@@ -10,9 +10,9 @@ data class SubobjectiveEntryRequest(
     val appointmentId: Int? = null,
     val planSessionId: Int? = null,
     val entryDate: LocalDateTime = LocalDateTime.now(),
-    val valueIncrement: Int,
-    val isSuccess: Boolean,
-    val note: String
+    val valueIncrement: Int? = 0,
+    val isSuccess: Boolean? = null,
+    val note: String? = null
 )
 
 fun SubobjectiveEntryRequest.toDomain(): SubobjectiveEntry = SubobjectiveEntry(
@@ -21,7 +21,7 @@ fun SubobjectiveEntryRequest.toDomain(): SubobjectiveEntry = SubobjectiveEntry(
     appointmentId = appointmentId,
     planSessionId = planSessionId,
     entryDate = entryDate,
-    valueIncrement = valueIncrement,
-    isSuccess = isSuccess,
-    note = note
+    valueIncrement = valueIncrement ?: 0,
+    isSuccess = isSuccess ?: false,
+    note = note ?: ""
 )

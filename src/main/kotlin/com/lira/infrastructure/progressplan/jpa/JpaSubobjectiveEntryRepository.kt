@@ -33,6 +33,17 @@ interface JpaSubobjectiveEntryRepository : JpaRepository<SubobjectiveEntryEntity
 
     fun findByPlanSessionId(planSessionId: Int): List<SubobjectiveEntryEntity>
 
+    @Query("""
+        SELECT e FROM SubobjectiveEntryEntity e
+        WHERE e.planSessionId IS NULL
+        AND e.subobjectiveId IN (
+            SELECT s.id FROM SubobjectiveEntity s
+            WHERE s.objective.progressPlan.id = :planId
+        )
+        ORDER BY e.entryDate DESC
+    """)
+    fun findStandaloneEntriesByPlanId(@Param("planId") planId: Int): List<SubobjectiveEntryEntity>
+
     @Modifying
     @Transactional
     @Query("DELETE FROM SubobjectiveEntryEntity e WHERE e.subobjectiveId = :subId")

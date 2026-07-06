@@ -4,6 +4,7 @@ import com.lira.domain.progressplan.*
 import com.lira.infrastructure.progressplan.entity.ObjectiveEntity
 import com.lira.infrastructure.progressplan.entity.ProgressPlanEntity
 import com.lira.infrastructure.progressplan.entity.SubobjectiveEntryEntity
+import com.lira.infrastructure.progressplan.entity.SubobjectiveEntity
 import com.lira.infrastructure.progressplan.entity.toDomain
 import com.lira.infrastructure.progressplan.entity.toEntity
 import com.lira.infrastructure.progressplan.jpa.JpaObjectiveRepository
@@ -33,31 +34,26 @@ class JpaProgressPlanAdapter(
     override fun getProgressPlanById(planId: Int): ProgressPlan {
         val planEntity = jpaProgressPlanRepository.findById(planId)
             .orElseThrow { Exception("plan for id=$planId does not exist") }
-        val statsMap = buildStatsMap(planEntity.objectives.flatMap { it.subobjectives }.map { it.id })
-        return planEntity.toDomain(statsMap)
+        return planEntity.toDomain()
     }
 
     override fun getProgressPlanByPatientId(
         patientId: Int,
         therapistId: Int
     ): List<ProgressPlan> {
-        val plans = jpaProgressPlanRepository.findAllByPatientIdAndTherapistId(patientId, therapistId)
-        val statsMap = buildStatsMap(plans.flatMap { it.objectives }.flatMap { it.subobjectives }.map { it.id })
-        return plans.map { it.toDomain(statsMap) }
+        return jpaProgressPlanRepository.findAllByPatientIdAndTherapistId(patientId, therapistId)
+            .map { it.toDomain() }
     }
 
     override fun getProgressPlansByPatientId(patientId: Int): List<ProgressPlan> {
-        val plans = jpaProgressPlanRepository.findAllByPatientId(patientId)
-        val statsMap = buildStatsMap(plans.flatMap { it.objectives }.flatMap { it.subobjectives }.map { it.id })
-        return plans.map { it.toDomain(statsMap) }
+        return jpaProgressPlanRepository.findAllByPatientId(patientId).map { it.toDomain() }
     }
 
     override fun getProgressPlanBySubobjectiveId(subobjectiveId: Int): ProgressPlan {
         val planEntity = jpaSubobjectiveRepository.findById(subobjectiveId)
             .orElseThrow { Exception("subobjective for id=$subobjectiveId does not exist") }
             .objective.progressPlan
-        val statsMap = buildStatsMap(planEntity.objectives.flatMap { it.subobjectives }.map { it.id })
-        return planEntity.toDomain(statsMap)
+        return planEntity.toDomain()
     }
 
     override fun getObjectivesByPlanId(planId: Int): List<Objective> {
@@ -75,36 +71,17 @@ class JpaProgressPlanAdapter(
         val planEntity = jpaObjectiveRepository.findById(objectiveId)
             .orElseThrow { Exception("objective for id=$objectiveId does not exist") }
             .progressPlan
-        val statsMap = buildStatsMap(planEntity.objectives.flatMap { it.subobjectives }.map { it.id })
-        return planEntity.toDomain(statsMap)
+        return planEntity.toDomain()
     }
 
     override fun getSubobjectivesByObjectiveId(objectiveId: Int): List<Subobjective> {
-        val entities = jpaSubobjectiveRepository.findByObjectiveId(objectiveId)
-        if (entities.isEmpty()) return emptyList()
-        val stats = buildStatsMap(entities.map { it.id })
-        return entities.map { entity ->
-            val (v, s, f) = stats[entity.id] ?: Triple(0, 0, 0)
-            entity.toDomain(currentValue = v, currentSuccess = s, currentFail = f)
-        }
+        return jpaSubobjectiveRepository.findByObjectiveId(objectiveId).map { it.toDomain() }
     }
 
     override fun getSubobjectiveById(id: Int): Subobjective {
-        val entity = jpaSubobjectiveRepository.findById(id)
+        return jpaSubobjectiveRepository.findById(id)
             .orElseThrow { Exception("subobjective for id=$id does not exist") }
-        val (v, s, f) = buildStatsMap(listOf(id))[id] ?: Triple(0, 0, 0)
-        return entity.toDomain(currentValue = v, currentSuccess = s, currentFail = f)
-    }
-
-    private fun buildStatsMap(subIds: List<Int>): Map<Int, Triple<Int, Int, Int>> {
-        if (subIds.isEmpty()) return emptyMap()
-        return jpaSubobjectiveEntryRepository.aggregateBySubobjectiveIds(subIds).associate { row ->
-            (row[0] as Number).toInt() to Triple(
-                (row[1] as Number).toInt(),
-                (row[2] as Number).toInt(),
-                (row[3] as Number).toInt()
-            )
-        }
+            .toDomain()
     }
 
     override fun saveSubobjectiveEntry(subobjectiveEntry: SubobjectiveEntry) {
@@ -174,6 +151,67 @@ class JpaProgressPlanAdapter(
 
     override fun findEntriesByPlanSessionId(planSessionId: Int): List<SubobjectiveEntry> {
         return jpaSubobjectiveEntryRepository.findByPlanSessionId(planSessionId).map { it.toDomain() }
+    }
+
+    override fun getStandaloneEntriesByPlanId(planId: Int): List<SubobjectiveEntry> {
+        return jpaSubobjectiveEntryRepository.findStandaloneEntriesByPlanId(planId).map { it.toDomain() }
+    }
+
+    override fun completeSubobjective(subobjectiveId: Int, objectiveId: Int, completed: Boolean) {
+        val entity = jpaSubobjectiveRepository.findById(subobjectiveId)
+            .orElseThrow { Exception("subobjective for id=$subobjectiveId does not exist") }
+        val newProgress = if (completed) 1.0 else 0.0
+        val updated = SubobjectiveEntity(
+            id = entity.id,
+            title = entity.title,
+            description = entity.description,
+            type = entity.type,
+            targetValue = entity.targetValue,
+            targetSuccess = entity.targetSuccess,
+            targetFail = entity.targetFail,
+            currentProgress = newProgress,
+            currentValue = entity.currentValue,
+            currentSuccessCount = entity.currentSuccessCount,
+            currentFailCount = entity.currentFailCount,
+            isCompleted = completed,
+            createdAt = entity.createdAt
+        ).apply { objective = entity.objective }
+        jpaSubobjectiveRepository.save(updated)
+    }
+
+    override fun updateSubobjectiveValues(
+        subobjectiveId: Int,
+        objectiveId: Int,
+        currentValue: Int?,
+        currentSuccess: Int?,
+        currentFail: Int?
+    ) {
+        val entity = jpaSubobjectiveRepository.findById(subobjectiveId)
+            .orElseThrow { Exception("subobjective for id=$subobjectiveId does not exist") }
+        val newCurrentValue = currentValue ?: entity.currentValue
+        val newCurrentSuccess = currentSuccess ?: entity.currentSuccessCount
+        val newCurrentFail = currentFail ?: entity.currentFailCount
+        val newProgress = if (entity.type == SubobjectiveType.QUANTITATIVE) {
+            (newCurrentValue.toDouble() / (entity.targetValue ?: 1)).coerceAtMost(1.0)
+        } else {
+            entity.currentProgress
+        }
+        val updated = SubobjectiveEntity(
+            id = entity.id,
+            title = entity.title,
+            description = entity.description,
+            type = entity.type,
+            targetValue = entity.targetValue,
+            targetSuccess = entity.targetSuccess,
+            targetFail = entity.targetFail,
+            currentProgress = newProgress,
+            currentValue = newCurrentValue,
+            currentSuccessCount = newCurrentSuccess,
+            currentFailCount = newCurrentFail,
+            isCompleted = entity.isCompleted,
+            createdAt = entity.createdAt
+        ).apply { objective = entity.objective }
+        jpaSubobjectiveRepository.save(updated)
     }
 
 }

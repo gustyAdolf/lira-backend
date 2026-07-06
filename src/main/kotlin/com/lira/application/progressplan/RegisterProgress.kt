@@ -22,11 +22,12 @@ class RegisterProgress(
         val subobjective = progressPlanRepository.getSubobjectiveById(entryRequest.subobjectiveId)
 
         if (SubobjectiveType.QUANTITATIVE == subobjective.type) {
-            val currentSum = progressPlanRepository.sumValueBySubobjective(entryRequest.subobjectiveId)
-            subobjective.currentProgress = (currentSum / (subobjective.targetValue ?: 1)).coerceAtMost(1.0)
+            val increment = entryRequest.valueIncrement ?: 0
+            subobjective.currentValue = maxOf(0, subobjective.currentValue + increment)
+            subobjective.currentProgress = (subobjective.currentValue.toDouble() / (subobjective.targetValue ?: 1)).coerceAtMost(1.0)
         } else {
-            val totalSuccesses = progressPlanRepository.countSuccessesBySubobjective(entryRequest.subobjectiveId)
-            subobjective.currentProgress = (totalSuccesses / (subobjective.targetSuccess ?: 1)).coerceAtMost(1.0)
+            // QUALITATIVE: update counters for clinical record only; progress is controlled by isCompleted
+            if (entryRequest.isSuccess == true) subobjective.currentSuccess++ else subobjective.currentFail++
         }
         progressPlanRepository.saveSubobjective(subobjective, entryRequest.objectiveId)
         log.info(
