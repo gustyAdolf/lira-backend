@@ -32,16 +32,11 @@ class UpdateSubobjective(private val progressPlanRepository: ProgressPlanReposit
             targetFail = targetFail
         )
 
-        val withProgress = if (targetChanged) {
-            val newProgress = if (updated.type == SubobjectiveType.QUANTITATIVE) {
-                val sum = progressPlanRepository.sumValueBySubobjective(subobjectiveId)
-                (sum / (updated.targetValue?.toDouble() ?: 1.0)).coerceAtMost(1.0)
-            } else {
-                val successes = progressPlanRepository.countSuccessesBySubobjective(subobjectiveId)
-                (successes / (updated.targetSuccess?.toDouble() ?: 1.0)).coerceAtMost(1.0)
-            }
+        val withProgress = if (targetChanged && updated.type == SubobjectiveType.QUANTITATIVE) {
+            val newProgress = (sub.currentValue.toDouble() / (updated.targetValue ?: 1)).coerceAtMost(1.0)
             updated.copy(currentProgress = newProgress)
         } else updated
+        // QUALITATIVE: progress stays at its current value (0.0 or 1.0 per isCompleted)
 
         progressPlanRepository.updateSubobjective(withProgress, objectiveId)
 

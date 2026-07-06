@@ -32,15 +32,12 @@ class ObjectiveEntity(
     lateinit var progressPlan: ProgressPlanEntity
 }
 
-fun ObjectiveEntity.toDomain(statsMap: Map<Int, Triple<Int, Int, Int>> = emptyMap()): Objective =
+fun ObjectiveEntity.toDomain(): Objective =
     Objective(
         id = id,
         title = title,
         description = description,
         orderIndex = orderIndex,
         createdAt = createdAt,
-        subobjectives = subobjectives.map { sub ->
-            val (v, s, f) = statsMap[sub.id] ?: Triple(0, 0, 0)
-            sub.toDomain(currentValue = v, currentSuccess = s, currentFail = f)
-        }
+        subobjectives = subobjectives.map { it.toDomain() }
     )
