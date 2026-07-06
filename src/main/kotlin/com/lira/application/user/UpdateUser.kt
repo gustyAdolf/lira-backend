@@ -40,7 +40,6 @@ class UpdateUser(
             is Patient -> user.copy(id = pathId, companyId = existing.companyId)
             is Therapist -> user.copy(id = pathId, companyId = existing.companyId)
             is Company -> user.copy(id = pathId, companyId = existing.companyId)
-            else -> user
         }
 
         log.info("User updated: id=$pathId")
