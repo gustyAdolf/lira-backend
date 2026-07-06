@@ -3,6 +3,8 @@ package com.lira.application.therapistschedule
 import com.lira.domain.appointment.AppointmentRepository
 import com.lira.domain.appointment.AppointmentStatus
 import com.lira.domain.therapistschedule.TherapistSchedule
+import com.lira.domain.therapistschedule.TherapistScheduleException
+import com.lira.domain.therapistschedule.TherapistScheduleExceptionRepository
 import com.lira.domain.therapistschedule.TherapistScheduleRepository
 import org.springframework.stereotype.Service
 import java.time.LocalDate
@@ -12,6 +14,7 @@ import java.time.LocalTime
 class TherapistScheduleService(
     private val scheduleRepository: TherapistScheduleRepository,
     private val appointmentRepository: AppointmentRepository,
+    private val exceptionRepository: TherapistScheduleExceptionRepository,
 ) {
     fun getSchedule(therapistId: Int): List<TherapistSchedule> =
         scheduleRepository.findByTherapistId(therapistId)
@@ -25,6 +28,10 @@ class TherapistScheduleService(
             .firstOrNull { it.dayOfWeek == isoDow }
             ?: return emptyList()
 
+        val exceptions = exceptionRepository.findByTherapistIdAndDate(therapistId, date)
+        val isFullDayOff = exceptions.any { it.startTime == null && it.endTime == null }
+        if (isFullDayOff) return emptyList()
+
         val dayStart = date.atStartOfDay()
         val dayEnd = date.atTime(23, 59, 59)
         val existingAppointments = appointmentRepository.getTherapistAppointments(
@@ -33,6 +40,11 @@ class TherapistScheduleService(
         )
 
         val activeAppointments = existingAppointments.filter { it.status != AppointmentStatus.CANCELLED }
+
+        val occupiedIntervals = activeAppointments.map { appt ->
+            val apptStart = appt.appointmentDate.toLocalTime()
+            apptStart to apptStart.plusMinutes(appt.appointmentDuration.toLong())
+        } + exceptions.map { exceptionInterval(it) }
 
         // Align first slot to the nearest :00 or :30 >= schedule.startTime
         val startMinute = schedule.startTime.hour * 60 + schedule.startTime.minute
@@ -44,15 +56,19 @@ class TherapistScheduleService(
 
         while (!current.isAfter(latestStart)) {
             val slotEnd = current.plusMinutes(durationMinutes.toLong())
-            val overlaps = activeAppointments.any { appt ->
-                val apptStart = appt.appointmentDate.toLocalTime()
-                val apptEnd = apptStart.plusMinutes(appt.appointmentDuration.toLong())
-                apptStart < slotEnd && apptEnd > current
+            val overlaps = occupiedIntervals.any { (occupiedStart, occupiedEnd) ->
+                occupiedStart < slotEnd && occupiedEnd > current
             }
             if (!overlaps) slots.add(current)
             current = current.plusMinutes(30)
         }
 
         return slots
+    }
+
+    private fun exceptionInterval(exception: TherapistScheduleException): Pair<LocalTime, LocalTime> {
+        val start = exception.startTime ?: LocalTime.MIN
+        val end = exception.endTime ?: LocalTime.of(23, 59, 59)
+        return start to end
     }
 }

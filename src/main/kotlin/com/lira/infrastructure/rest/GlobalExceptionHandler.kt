@@ -88,6 +88,13 @@ class GlobalExceptionHandler {
         return ApiResponse(ApiResponseStatus.FAILURE, e.message ?: "El terapeuta ya tiene una cita en ese horario")
     }
 
+    @ExceptionHandler(ScheduleException.TherapistHasAppointmentsThatDay::class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    fun handleTherapistHasAppointmentsThatDay(e: ScheduleException.TherapistHasAppointmentsThatDay): ApiResponse<Unit> {
+        log.warn("Schedule exception rejected: ${e.message}")
+        return ApiResponse(ApiResponseStatus.FAILURE, e.message ?: "El terapeuta ya tiene citas registradas ese día")
+    }
+
     @ExceptionHandler(PatientTaskException.InvalidEntryTarget::class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     fun handleInvalidPatientTaskEntryTarget(e: PatientTaskException.InvalidEntryTarget): ApiResponse<Unit> {
