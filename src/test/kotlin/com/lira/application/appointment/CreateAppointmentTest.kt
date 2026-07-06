@@ -4,6 +4,7 @@ import com.lira.domain.appointment.Appointment
 import com.lira.domain.appointment.AppointmentRepository
 import com.lira.domain.appointment.AppointmentType
 import com.lira.domain.therapistschedule.TherapistSchedule
+import com.lira.domain.therapistschedule.TherapistScheduleExceptionRepository
 import com.lira.domain.therapistschedule.TherapistScheduleRepository
 import com.lira.domain.user.Patient
 import com.lira.domain.user.Therapist
@@ -25,6 +26,7 @@ class CreateAppointmentTest {
 
     private lateinit var appointmentRepository: AppointmentRepository
     private lateinit var scheduleRepository: TherapistScheduleRepository
+    private lateinit var exceptionRepository: TherapistScheduleExceptionRepository
     private lateinit var createAppointment: CreateAppointment
 
     private val allDaySchedule = (1..7).map { dow ->
@@ -40,9 +42,11 @@ class CreateAppointmentTest {
     fun setUp() {
         appointmentRepository = mockk()
         scheduleRepository = mockk()
+        exceptionRepository = mockk()
         every { scheduleRepository.findByTherapistId(any()) } returns allDaySchedule
         every { appointmentRepository.getTherapistAppointments(any(), any(), any(), any<Sort>()) } returns emptyList()
-        createAppointment = CreateAppointment(appointmentRepository, scheduleRepository)
+        every { exceptionRepository.findByTherapistIdAndDate(any(), any()) } returns emptyList()
+        createAppointment = CreateAppointment(appointmentRepository, scheduleRepository, exceptionRepository)
     }
 
     @Test

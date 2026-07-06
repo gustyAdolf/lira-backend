@@ -5,18 +5,18 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
 
-class LiraUserDetails(private val patient: User) : UserDetails {
+class LiraUserDetails(val user: User) : UserDetails {
 
     override fun getAuthorities(): List<SimpleGrantedAuthority> {
-        return listOf(SimpleGrantedAuthority(patient.userType.name))
+        return listOf(SimpleGrantedAuthority(user.userType.name))
     }
 
     override fun getPassword(): String {
-        return patient.password
+        return user.password
     }
 
     override fun getUsername(): String {
-        return patient.email
+        return user.email
     }
 
     override fun isAccountNonExpired(): Boolean {
