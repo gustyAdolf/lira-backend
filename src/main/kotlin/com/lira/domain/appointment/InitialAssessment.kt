@@ -10,6 +10,7 @@ data class InitialAssessment(
     val sessionNotes: String? = null,
     val nextSteps: String? = null,
     val transcript: String? = null,
+    val aiSummary: String? = null,
     val audioLocalPath: String? = null,
     val createdAt: LocalDateTime = LocalDateTime.now(),
     val updatedAt: LocalDateTime = LocalDateTime.now(),

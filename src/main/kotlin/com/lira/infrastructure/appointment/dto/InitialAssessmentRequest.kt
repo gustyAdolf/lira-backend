@@ -8,6 +8,7 @@ data class InitialAssessmentRequest(
     val sessionNotes: String? = null,
     val nextSteps: String? = null,
     val transcript: String? = null,
+    val aiSummary: String? = null,
     val audioLocalPath: String? = null,
 )
 
@@ -17,5 +18,6 @@ fun InitialAssessmentRequest.toPatch() = InitialAssessmentPatch(
     sessionNotes = sessionNotes,
     nextSteps = nextSteps,
     transcript = transcript,
+    aiSummary = aiSummary,
     audioLocalPath = audioLocalPath,
 )

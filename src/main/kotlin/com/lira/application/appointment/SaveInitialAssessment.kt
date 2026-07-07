@@ -19,6 +19,7 @@ class SaveInitialAssessment(private val repository: InitialAssessmentRepository)
             sessionNotes = patch.sessionNotes ?: base.sessionNotes,
             nextSteps = patch.nextSteps ?: base.nextSteps,
             transcript = patch.transcript ?: base.transcript,
+            aiSummary = patch.aiSummary ?: base.aiSummary,
             audioLocalPath = patch.audioLocalPath ?: base.audioLocalPath,
             updatedAt = LocalDateTime.now(),
         )
@@ -32,5 +33,6 @@ data class InitialAssessmentPatch(
     val sessionNotes: String? = null,
     val nextSteps: String? = null,
     val transcript: String? = null,
+    val aiSummary: String? = null,
     val audioLocalPath: String? = null,
 )

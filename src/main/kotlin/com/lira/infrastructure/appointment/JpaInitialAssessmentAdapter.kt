@@ -28,6 +28,7 @@ class JpaInitialAssessmentAdapter(
                 sessionNotes = v.getSessionNotes(),
                 nextSteps = v.getNextSteps(),
                 transcript = v.getTranscript(),
+                aiSummary = v.getAiSummary(),
                 audioLocalPath = v.getAudioLocalPath(),
                 createdAt = v.getCreatedAt(),
                 updatedAt = v.getUpdatedAt(),

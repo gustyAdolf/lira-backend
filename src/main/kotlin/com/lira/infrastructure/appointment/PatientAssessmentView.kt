@@ -10,6 +10,7 @@ interface PatientAssessmentView {
     fun getSessionNotes(): String?
     fun getNextSteps(): String?
     fun getTranscript(): String?
+    fun getAiSummary(): String?
     fun getAudioLocalPath(): String?
     fun getCreatedAt(): LocalDateTime
     fun getUpdatedAt(): LocalDateTime

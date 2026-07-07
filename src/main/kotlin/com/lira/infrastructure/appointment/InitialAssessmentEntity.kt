@@ -28,6 +28,9 @@ data class InitialAssessmentEntity(
     @Column(name = "transcript", columnDefinition = "TEXT")
     val transcript: String? = null,
 
+    @Column(name = "ai_summary", columnDefinition = "TEXT")
+    val aiSummary: String? = null,
+
     @Column(name = "audio_local_path")
     val audioLocalPath: String? = null,
 
@@ -46,6 +49,7 @@ fun InitialAssessmentEntity.toDomain() = InitialAssessment(
     sessionNotes = sessionNotes,
     nextSteps = nextSteps,
     transcript = transcript,
+    aiSummary = aiSummary,
     audioLocalPath = audioLocalPath,
     createdAt = createdAt,
     updatedAt = updatedAt,
@@ -59,6 +63,7 @@ fun InitialAssessment.toEntity() = InitialAssessmentEntity(
     sessionNotes = sessionNotes,
     nextSteps = nextSteps,
     transcript = transcript,
+    aiSummary = aiSummary,
     audioLocalPath = audioLocalPath,
     createdAt = createdAt,
     updatedAt = updatedAt,
