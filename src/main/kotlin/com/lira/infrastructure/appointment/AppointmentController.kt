@@ -73,7 +73,7 @@ class AppointmentController(
     }
 
     @GetMapping("/company")
-    @PreAuthorize("hasAnyAuthority('ADMIN','COMPANY')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','COMPANY','THERAPIST')")
     fun getCompanyAppointments(
         @RequestParam(value = "companyId") companyId: Int,
         @RequestParam(value = "startDate") @DateTimeFormat(pattern = "yyyy-MM-dd") startDate: LocalDate,

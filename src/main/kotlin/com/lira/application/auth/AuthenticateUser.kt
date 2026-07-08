@@ -1,6 +1,8 @@
 package com.lira.application.auth
 
+import com.lira.application.user.GetTherapistClinics
 import com.lira.application.user.UserQueryService
+import com.lira.domain.user.UserType
 import com.lira.infrastructure.auth.AuthenticationResponse
 import com.lira.infrastructure.security.JwtUtil
 import org.slf4j.LoggerFactory
@@ -14,7 +16,8 @@ class AuthenticateUser(
     private val authenticationManager: AuthenticationManager,
     private val jwtUtil: JwtUtil,
     private val userDetailsService: UserDetailsService,
-    private val userQueryService: UserQueryService
+    private val userQueryService: UserQueryService,
+    private val getTherapistClinics: GetTherapistClinics,
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
 
@@ -26,9 +29,17 @@ class AuthenticateUser(
         val token = jwtUtil.generateToken(userDetails)
         val userResponse = userQueryService.getUserByEmail(email)
         log.info("User authenticated: $email [${userResponse.userType}]")
+
+        val clinics = if (userResponse.userType == UserType.THERAPIST) {
+            getTherapistClinics.execute(userResponse.id)
+        } else {
+            emptyList()
+        }
+
         return AuthenticationResponse(
             token = token,
-            user = userResponse
+            user = userResponse,
+            clinics = clinics,
         )
     }
 }

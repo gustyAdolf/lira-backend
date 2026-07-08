@@ -1,6 +1,7 @@
 package com.lira.infrastructure.user.entity
 
 import com.lira.domain.user.*
+import com.lira.domain.user.ClinicSummary
 import com.lira.infrastructure.user.UserCompanyEntity
 import com.lira.infrastructure.user.jpa.JpaCompanyRepository
 import com.lira.infrastructure.user.jpa.JpaPatientRepository
@@ -138,6 +139,16 @@ class JpaUserRepositoryAdapter(
                 entity.companyAddress = user.companyAddress
                 jpaCompanyRepository.save(entity).toDomain()
             }
+        }
+    }
+
+    override fun findClinicsByTherapistId(therapistId: Int): List<ClinicSummary> {
+        return jpaUserCompanyRepository.findByUserId(therapistId).map { uc ->
+            ClinicSummary(
+                id = uc.company.id,
+                name = uc.company.name,
+                isOwner = uc.isOwner
+            )
         }
     }
 

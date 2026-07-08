@@ -20,14 +20,14 @@ class CompanyController(
 ) {
 
     @GetMapping("/{companyId}/therapists/availability")
-    @PreAuthorize("hasAnyAuthority('ADMIN','COMPANY')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','COMPANY','THERAPIST')")
     fun getTherapistsAvailability(@PathVariable companyId: String): ResponseEntity<List<TherapistAvailabilityResponse>> {
         val therapistAvailability = getTherapistsAvailability.execute(companyId.toInt())
         return ResponseEntity.ok(therapistAvailability.map { it.toResponse() })
     }
 
     @GetMapping("/{companyId}/patients")
-    @PreAuthorize("hasAnyAuthority('ADMIN','COMPANY')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','COMPANY','THERAPIST')")
     fun getCompanyPatients(@PathVariable companyId: Int): ResponseEntity<List<PatientResponse>> {
         val patients = getCompanyPatients.execute(companyId).map { it.toResponse() }
         return ResponseEntity.ok(patients)

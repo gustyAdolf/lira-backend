@@ -1,7 +1,9 @@
 package com.lira.infrastructure.user
 
+import com.lira.application.user.GetTherapistClinics
 import com.lira.application.user.GetTherapistPatients
 import com.lira.application.user.ListTherapistByCompany
+import com.lira.domain.user.ClinicSummary
 import com.lira.infrastructure.user.dto.PatientWithRelationResponse
 import com.lira.infrastructure.user.dto.TherapistResponse
 import com.lira.infrastructure.user.dto.toResponse
@@ -13,7 +15,8 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/therapist")
 class TherapistController(
     private val listTherapistByCompany: ListTherapistByCompany,
-    private val getTherapistPatients: GetTherapistPatients
+    private val getTherapistPatients: GetTherapistPatients,
+    private val getTherapistClinics: GetTherapistClinics,
 ) {
     @GetMapping("/company/{companyId}")
     @PreAuthorize("hasAnyAuthority('ADMIN','COMPANY')")
@@ -21,6 +24,11 @@ class TherapistController(
         val therapists = listTherapistByCompany.execute(companyId).map { it.toResponse() }
         return ResponseEntity.ok(therapists)
     }
+
+    @GetMapping("/{therapistId}/clinics")
+    @PreAuthorize("hasAnyAuthority('ADMIN','THERAPIST')")
+    fun getTherapistClinics(@PathVariable therapistId: Int): ResponseEntity<List<ClinicSummary>> =
+        ResponseEntity.ok(getTherapistClinics.execute(therapistId))
 
     @GetMapping("/{therapistId}/patients")
     @PreAuthorize("hasAnyAuthority('ADMIN','THERAPIST')")

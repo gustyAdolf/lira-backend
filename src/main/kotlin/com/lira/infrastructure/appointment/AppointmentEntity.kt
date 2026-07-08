@@ -48,7 +48,10 @@ data class AppointmentEntity(
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    val status: AppointmentStatus
+    val status: AppointmentStatus,
+
+    @Column(name = "company_id")
+    val companyId: Int? = null,
 )
 
 fun AppointmentEntity.toDomain(): Appointment = Appointment(
@@ -62,7 +65,8 @@ fun AppointmentEntity.toDomain(): Appointment = Appointment(
     appointmentDuration = this.appointmentDuration,
     description = this.description,
     cost = this.cost,
-    status = this.status
+    status = this.status,
+    companyId = this.companyId,
 )
 
 fun Appointment.toEntity(
@@ -78,5 +82,6 @@ fun Appointment.toEntity(
     appointmentDuration = appointmentDuration,
     description = description,
     cost = cost,
-    status = status
+    status = status,
+    companyId = companyId,
 )

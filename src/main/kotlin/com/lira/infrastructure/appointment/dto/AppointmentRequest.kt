@@ -20,7 +20,8 @@ data class AppointmentRequest(
     val appointmentDuration: Int,
     val description: String? = null,
     val cost: BigDecimal = BigDecimal.ZERO,
-    val status: AppointmentStatus = AppointmentStatus.PENDING
+    val status: AppointmentStatus = AppointmentStatus.PENDING,
+    val companyId: Int? = null,
 )
 
 fun AppointmentRequest.toDomain(): Appointment {
@@ -37,5 +38,6 @@ fun AppointmentRequest.toDomain(): Appointment {
         description = description,
         cost = cost,
         status = status,
+        companyId = companyId,
     )
 }

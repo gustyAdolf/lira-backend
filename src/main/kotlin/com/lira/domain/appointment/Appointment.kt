@@ -17,4 +17,5 @@ data class Appointment(
     val description: String?,
     val status: AppointmentStatus,
     val cost: BigDecimal,
+    val companyId: Int? = null,
 )

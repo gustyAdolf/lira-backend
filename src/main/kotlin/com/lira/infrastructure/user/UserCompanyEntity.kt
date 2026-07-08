@@ -17,5 +17,8 @@ data class UserCompanyEntity(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id", nullable = false)
-    val company: CompanyEntity
+    val company: CompanyEntity,
+
+    @Column(name = "is_owner", nullable = false)
+    val isOwner: Boolean = false
 )

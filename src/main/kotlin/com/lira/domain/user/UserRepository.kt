@@ -15,4 +15,5 @@ interface UserRepository {
     fun saveUser(user: User)
     fun updateUser(user: User): User
     fun updatePassword(userId: Int, hashedPassword: String)
+    fun findClinicsByTherapistId(therapistId: Int): List<ClinicSummary>
 }
