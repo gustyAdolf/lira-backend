@@ -14,5 +14,6 @@ data class Company(
     override val profileImagePath: String?,
     override val releaseDate: LocalDate?,
     val cif: String?,
-    val companyAddress: String?
+    val companyAddress: String?,
+    val cancellationWindowHours: Int = 24,
 ) : User()

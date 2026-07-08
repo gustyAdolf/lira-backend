@@ -93,6 +93,13 @@ class JpaAppointmentRepositoryAdapter(
         return jpaAppointmentRepository.save(updated).toDomain()
     }
 
+    override fun confirmAttendance(appointmentId: Int): Appointment {
+        val appointment = jpaAppointmentRepository.findById(appointmentId)
+            .orElseThrow { AppointmentException.NoAppointmentExists() }
+        val updated = appointment.copy(patientConfirmedAt = LocalDateTime.now())
+        return jpaAppointmentRepository.save(updated).toDomain()
+    }
+
     override fun deleteById(id: Int) {
         jpaAppointmentRepository.deleteById(id)
     }
@@ -109,4 +116,7 @@ class JpaAppointmentRepositoryAdapter(
 
     override fun findCompletedByPlanId(planId: Int): List<Appointment> =
         jpaAppointmentRepository.findCompletedByPlanId(planId).map { it.toDomain() }
+
+    override fun findUpcomingActiveAppointments(from: LocalDateTime, to: LocalDateTime): List<Appointment> =
+        jpaAppointmentRepository.findUpcomingActiveAppointments(from, to).map { it.toDomain() }
 }

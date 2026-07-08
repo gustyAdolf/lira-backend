@@ -70,7 +70,8 @@ fun UserRequest.toDomain(userImagePath: String, encodePassword: String): User = 
         profileImagePath = userImagePath,
         releaseDate = releaseDate,
         cif = cif,
-        companyAddress = companyAddress
+        companyAddress = companyAddress,
+        cancellationWindowHours = cancellationWindowHours
     )
 }
 

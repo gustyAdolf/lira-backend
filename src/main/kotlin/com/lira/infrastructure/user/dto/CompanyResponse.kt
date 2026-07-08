@@ -13,7 +13,8 @@ data class CompanyResponse(
     override val telephone: String?,
     override val address: String?,
     val cif: String?,
-    val companyAddress: String?
+    val companyAddress: String?,
+    val cancellationWindowHours: Int = 24
 ) : UserResponse()
 
 fun CompanyResponse.toResponse(): CompanyResponse = CompanyResponse(
@@ -25,5 +26,6 @@ fun CompanyResponse.toResponse(): CompanyResponse = CompanyResponse(
     telephone = this.telephone,
     address = this.address,
     cif = this.cif,
-    companyAddress = this.companyAddress
+    companyAddress = this.companyAddress,
+    cancellationWindowHours = this.cancellationWindowHours
 )

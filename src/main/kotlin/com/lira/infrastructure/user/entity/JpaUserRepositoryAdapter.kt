@@ -137,6 +137,7 @@ class JpaUserRepositoryAdapter(
                 entity.profileImagePath = user.profileImagePath
                 entity.cif = user.cif
                 entity.companyAddress = user.companyAddress
+                entity.cancellationWindowHours = user.cancellationWindowHours
                 jpaCompanyRepository.save(entity).toDomain()
             }
         }

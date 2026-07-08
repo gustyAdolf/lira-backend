@@ -18,4 +18,5 @@ data class Appointment(
     val status: AppointmentStatus,
     val cost: BigDecimal,
     val companyId: Int? = null,
+    val patientConfirmedAt: LocalDateTime? = null,
 )

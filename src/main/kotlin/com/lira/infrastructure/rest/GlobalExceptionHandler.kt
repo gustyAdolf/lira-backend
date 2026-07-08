@@ -2,6 +2,7 @@ package com.lira.infrastructure.rest
 
 import com.lira.domain.exceptions.AppointmentException
 import com.lira.domain.exceptions.CheckinException
+import com.lira.domain.exceptions.NotificationException
 import com.lira.domain.exceptions.PatientTaskException
 import com.lira.domain.exceptions.ScheduleException
 import org.slf4j.LoggerFactory
@@ -65,6 +66,20 @@ class GlobalExceptionHandler {
     fun handlerAppointmentNotEditable(e: AppointmentException.NotEditable): ApiResponse<Unit> {
         log.warn("Appointment not editable: ${e.message}")
         return ApiResponse(ApiResponseStatus.FAILURE, e.message ?: "La cita no se puede editar en su estado actual")
+    }
+
+    @ExceptionHandler(AppointmentException.CancellationWindowExpired::class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    fun handlerCancellationWindowExpired(e: AppointmentException.CancellationWindowExpired): ApiResponse<Unit> {
+        log.warn("Cancellation rejected: ${e.message}")
+        return ApiResponse(ApiResponseStatus.FAILURE, e.message ?: "Ya no puedes cancelar esta cita directamente")
+    }
+
+    @ExceptionHandler(NotificationException.NoNotificationExists::class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    fun handlerNoNotificationExists(e: NotificationException.NoNotificationExists): ApiResponse<Unit> {
+        log.warn("Notification not found: ${e.message}")
+        return ApiResponse(ApiResponseStatus.FAILURE, e.message ?: "No existe la notificación")
     }
 
     @ExceptionHandler(ScheduleException.TherapistNotAvailableDay::class)
