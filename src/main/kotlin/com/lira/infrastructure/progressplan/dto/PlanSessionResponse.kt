@@ -13,6 +13,7 @@ data class PlanSessionResponse(
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     val sessionDate: LocalDateTime,
     val notes: String?,
+    val aiSummary: String?,
     val entries: List<SubobjectiveEntryResponse>
 )
 
@@ -23,5 +24,6 @@ fun PlanSession.toResponse(entries: List<SubobjectiveEntry> = emptyList()) = Pla
     appointmentId = appointmentId,
     sessionDate = sessionDate,
     notes = notes,
+    aiSummary = aiSummary,
     entries = entries.map { it.toEntryResponse() }
 )

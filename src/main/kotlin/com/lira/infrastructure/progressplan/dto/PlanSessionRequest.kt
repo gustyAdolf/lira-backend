@@ -8,6 +8,7 @@ data class PlanSessionRequest(
     val therapistId: Int,
     val appointmentId: Int? = null,
     val notes: String? = null,
+    val aiSummary: String? = null,
 )
 
 fun PlanSessionRequest.toDomain() = PlanSession(
@@ -15,5 +16,6 @@ fun PlanSessionRequest.toDomain() = PlanSession(
     therapistId = therapistId,
     appointmentId = appointmentId,
     sessionDate = LocalDateTime.now(),
-    notes = notes
+    notes = notes,
+    aiSummary = aiSummary,
 )

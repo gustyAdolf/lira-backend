@@ -28,6 +28,7 @@ interface JpaInitialAssessmentRepository : JpaRepository<InitialAssessmentEntity
                    ia.session_notes   AS "sessionNotes",
                    ia.next_steps      AS "nextSteps",
                    ia.transcript      AS "transcript",
+                   ia.ai_summary      AS "aiSummary",
                    ia.audio_local_path AS "audioLocalPath",
                    ia.created_at      AS "createdAt",
                    ia.updated_at      AS "updatedAt",

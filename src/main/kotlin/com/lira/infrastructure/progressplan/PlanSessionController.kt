@@ -2,6 +2,7 @@ package com.lira.infrastructure.progressplan
 
 import com.lira.application.progressplan.CreatePlanSession
 import com.lira.application.progressplan.GetPlanSessionsByPlan
+import com.lira.application.progressplan.TranscribeAudioDraft
 import com.lira.application.progressplan.TranscribePlanSession
 import com.lira.infrastructure.progressplan.dto.PlanSessionRequest
 import com.lira.infrastructure.progressplan.dto.PlanSessionResponse
@@ -21,7 +22,8 @@ private const val MAX_AUDIO_BYTES = 25 * 1024 * 1024L // 25 MB
 class PlanSessionController(
     private val createPlanSession: CreatePlanSession,
     private val getPlanSessionsByPlan: GetPlanSessionsByPlan,
-    private val transcribePlanSession: TranscribePlanSession
+    private val transcribePlanSession: TranscribePlanSession,
+    private val transcribeAudioDraft: TranscribeAudioDraft,
 ) {
 
     @PostMapping
@@ -39,6 +41,25 @@ class PlanSessionController(
         @PathVariable planId: Int
     ): ResponseEntity<List<PlanSessionResponse>> {
         return ResponseEntity.ok(getPlanSessionsByPlan.execute(planId))
+    }
+
+    @PostMapping("/transcribe-draft")
+    @PreAuthorize("hasAnyAuthority('ADMIN','THERAPIST')")
+    fun transcribeDraft(
+        @RequestParam("audio") audio: MultipartFile
+    ): ResponseEntity<TranscriptionResponse> {
+        if (audio.size > MAX_AUDIO_BYTES) {
+            throw ResponseStatusException(
+                HttpStatus.UNPROCESSABLE_ENTITY,
+                "Audio demasiado largo; la sesión no debe superar ~55 minutos con la configuración actual"
+            )
+        }
+        val result = try {
+            transcribeAudioDraft.execute(audio.bytes, audio.contentType ?: "audio/aac")
+        } catch (e: Exception) {
+            throw ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "Error al procesar el audio: ${e.message}")
+        }
+        return ResponseEntity.ok(result.toResponse())
     }
 
     @PostMapping("/{id}/transcribe")
