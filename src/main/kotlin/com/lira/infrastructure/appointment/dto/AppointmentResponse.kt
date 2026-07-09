@@ -22,7 +22,9 @@ data class AppointmentResponse(
     val therapistNotes: String?,
     val description: String?,
     val status: AppointmentStatus,
-    val cost: BigDecimal
+    val cost: BigDecimal,
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    val patientConfirmedAt: LocalDateTime?
 )
 
 fun Appointment.toResponse(): AppointmentResponse = AppointmentResponse(
@@ -36,5 +38,6 @@ fun Appointment.toResponse(): AppointmentResponse = AppointmentResponse(
     therapistNotes = this.therapistNotes,
     description = this.description,
     status = this.status,
-    cost = this.cost
+    cost = this.cost,
+    patientConfirmedAt = this.patientConfirmedAt
 )

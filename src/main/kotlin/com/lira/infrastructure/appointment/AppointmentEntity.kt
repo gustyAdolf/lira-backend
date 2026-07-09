@@ -52,6 +52,9 @@ data class AppointmentEntity(
 
     @Column(name = "company_id")
     val companyId: Int? = null,
+
+    @Column(name = "patient_confirmed_at")
+    val patientConfirmedAt: LocalDateTime? = null,
 )
 
 fun AppointmentEntity.toDomain(): Appointment = Appointment(
@@ -67,6 +70,7 @@ fun AppointmentEntity.toDomain(): Appointment = Appointment(
     cost = this.cost,
     status = this.status,
     companyId = this.companyId,
+    patientConfirmedAt = this.patientConfirmedAt,
 )
 
 fun Appointment.toEntity(
@@ -84,4 +88,5 @@ fun Appointment.toEntity(
     cost = cost,
     status = status,
     companyId = companyId,
+    patientConfirmedAt = patientConfirmedAt,
 )

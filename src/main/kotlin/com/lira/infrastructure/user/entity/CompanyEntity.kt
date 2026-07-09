@@ -14,7 +14,10 @@ class CompanyEntity(
     var cif: String?,
 
     @Column(name = "company_address")
-    var companyAddress: String? = null
+    var companyAddress: String? = null,
+
+    @Column(name = "cancellation_window_hours")
+    var cancellationWindowHours: Int = 24
 ) : UserEntity()
 
 fun CompanyEntity.toDomain(): Company = Company(
@@ -30,11 +33,13 @@ fun CompanyEntity.toDomain(): Company = Company(
     companyAddress = this.companyAddress,
     userType = UserType.COMPANY,
     companyId = 0,
+    cancellationWindowHours = this.cancellationWindowHours,
 )
 
 fun Company.toEntity(): CompanyEntity = CompanyEntity(
     cif = cif,
-    companyAddress = companyAddress
+    companyAddress = companyAddress,
+    cancellationWindowHours = cancellationWindowHours
 ).apply {
     this.name = this@toEntity.name
     this.email = this@toEntity.email

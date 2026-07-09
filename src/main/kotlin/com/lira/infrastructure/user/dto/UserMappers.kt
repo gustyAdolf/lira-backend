@@ -36,6 +36,7 @@ fun User.toResponse(): UserResponse = when (this) {
         telephone = telephone,
         address = address,
         cif = cif,
-        companyAddress = companyAddress
+        companyAddress = companyAddress,
+        cancellationWindowHours = cancellationWindowHours
     )
 }

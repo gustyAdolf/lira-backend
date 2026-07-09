@@ -69,7 +69,8 @@ fun UserEntity.toDomain(): User =
             address = this.address,
             releaseDate = this.releaseDate,
             cif = this.cif,
-            companyAddress = this.companyAddress
+            companyAddress = this.companyAddress,
+            cancellationWindowHours = this.cancellationWindowHours
         )
 
         // Fallback para proxies Hibernate con herencia JOINED que no inicializan el subtipo

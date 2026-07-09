@@ -16,4 +16,5 @@ data class CompanyRequest(
     override val telephone: String?,
     val companyAddress: String?,
     val cif: String?,
+    val cancellationWindowHours: Int = 24,
 ) : UserRequest()

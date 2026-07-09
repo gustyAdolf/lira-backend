@@ -9,11 +9,13 @@ import com.lira.infrastructure.appointment.dto.UpdateAppointmentStatusRequest
 import com.lira.infrastructure.appointment.dto.toResponse
 import com.lira.infrastructure.rest.ApiResponse
 import com.lira.infrastructure.rest.ApiResponseStatus
+import com.lira.infrastructure.security.LiraUserDetails
 import com.lira.infrastructure.util.PageableUtil
 import org.springframework.data.domain.PageRequest
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 import java.time.LocalDate
 
@@ -30,8 +32,17 @@ class AppointmentController(
     private val updateAppointmentStatus: UpdateAppointmentStatus,
     private val deleteAppointment: DeleteAppointment,
     private val closeAppointmentSession: CloseAppointmentSession,
-    private val getAppointmentsByPlan: GetAppointmentsByPlan
+    private val getAppointmentsByPlan: GetAppointmentsByPlan,
+    private val confirmAppointmentAttendance: ConfirmAppointmentAttendance,
+    private val cancelAppointmentByPatient: CancelAppointmentByPatient,
+    private val requestAppointmentCancellation: RequestAppointmentCancellation,
+    private val getAppointmentById: GetAppointmentById
 ) {
+    @GetMapping("/{appointmentId}")
+    @PreAuthorize("hasAnyAuthority('ADMIN','THERAPIST','PATIENT','COMPANY')")
+    fun getAppointmentById(@PathVariable appointmentId: Int): ResponseEntity<AppointmentResponse> =
+        ResponseEntity.ok(getAppointmentById.execute(appointmentId).toResponse())
+
     @GetMapping
     @PreAuthorize("hasAnyAuthority('ADMIN','THERAPIST')")
     fun getTherapistAppointments(
@@ -140,6 +151,36 @@ class AppointmentController(
     ): ApiResponse<AppointmentResponse> {
         val response = updateAppointmentStatus.execute(appointmentId, appointmentStatusUpdateRequest).toResponse()
         return ApiResponse(ApiResponseStatus.SUCCESS, "Estado actualizado correctamente", response)
+    }
+
+    @PostMapping("/{appointmentId}/confirm")
+    @PreAuthorize("hasAuthority('PATIENT')")
+    fun confirmAttendance(
+        @PathVariable appointmentId: Int,
+        @AuthenticationPrincipal userDetails: LiraUserDetails
+    ): ApiResponse<AppointmentResponse> {
+        val response = confirmAppointmentAttendance.execute(appointmentId, userDetails.user.id).toResponse()
+        return ApiResponse(ApiResponseStatus.SUCCESS, "Asistencia confirmada correctamente", response)
+    }
+
+    @PostMapping("/{appointmentId}/cancel")
+    @PreAuthorize("hasAuthority('PATIENT')")
+    fun cancelAppointment(
+        @PathVariable appointmentId: Int,
+        @AuthenticationPrincipal userDetails: LiraUserDetails
+    ): ApiResponse<AppointmentResponse> {
+        val response = cancelAppointmentByPatient.execute(appointmentId, userDetails.user.id).toResponse()
+        return ApiResponse(ApiResponseStatus.SUCCESS, "Cita cancelada correctamente", response)
+    }
+
+    @PostMapping("/{appointmentId}/request-cancellation")
+    @PreAuthorize("hasAuthority('PATIENT')")
+    fun requestCancellation(
+        @PathVariable appointmentId: Int,
+        @AuthenticationPrincipal userDetails: LiraUserDetails
+    ): ApiResponse<AppointmentResponse> {
+        val response = requestAppointmentCancellation.execute(appointmentId, userDetails.user.id).toResponse()
+        return ApiResponse(ApiResponseStatus.SUCCESS, "Solicitud de cancelación enviada", response)
     }
 
     @DeleteMapping("/{appointmentId}")

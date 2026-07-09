@@ -24,6 +24,8 @@ interface AppointmentRepository {
 
     fun updateAppointmentStatus(appointmentId: Int, status: AppointmentStatus): Appointment
 
+    fun confirmAttendance(appointmentId: Int): Appointment
+
     fun deleteById(id: Int)
 
     fun countAppointmentsByTherapists(therapistsId: List<Int>, now: LocalDateTime): Map<Int, Int>
@@ -31,4 +33,6 @@ interface AppointmentRepository {
     fun findPatientIdsByTherapistId(therapistId: Int): Set<Int>
 
     fun findCompletedByPlanId(planId: Int): List<Appointment>
+
+    fun findUpcomingActiveAppointments(from: LocalDateTime, to: LocalDateTime): List<Appointment>
 }

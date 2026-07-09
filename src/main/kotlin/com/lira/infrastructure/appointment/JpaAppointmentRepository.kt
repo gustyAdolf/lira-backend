@@ -96,4 +96,18 @@ interface JpaAppointmentRepository : JpaRepository<AppointmentEntity, Int> {
     )
     fun findCompletedByPlanId(@Param("planId") planId: Int): List<AppointmentEntity>
 
+    @Query(
+        """SELECT a FROM AppointmentEntity a
+            WHERE a.appointmentDate BETWEEN :from AND :to
+            AND a.status NOT IN (
+                com.lira.domain.appointment.AppointmentStatus.CANCELLED,
+                com.lira.domain.appointment.AppointmentStatus.DONE,
+                com.lira.domain.appointment.AppointmentStatus.COMPLETED
+            )"""
+    )
+    fun findUpcomingActiveAppointments(
+        @Param("from") from: LocalDateTime,
+        @Param("to") to: LocalDateTime
+    ): List<AppointmentEntity>
+
 }
