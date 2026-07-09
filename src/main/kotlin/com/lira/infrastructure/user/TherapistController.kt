@@ -35,9 +35,10 @@ class TherapistController(
     fun getTherapistPatients(
         @PathVariable therapistId: Int,
         @RequestParam(required = false) name: String?,
-        @RequestParam(defaultValue = "20") size: Int
+        @RequestParam(defaultValue = "20") size: Int,
+        @RequestParam(required = false) companyId: Int?
     ): ResponseEntity<List<PatientWithRelationResponse>> {
-        val result = getTherapistPatients.execute(therapistId, name, size)
+        val result = getTherapistPatients.execute(therapistId, name, size, companyId)
         return ResponseEntity.ok(result.map { it.toResponse() })
     }
 }

@@ -14,10 +14,20 @@ class GetTherapistPatients(
     private val userRepository: UserRepository,
     private val appointmentRepository: AppointmentRepository
 ) {
-    fun execute(therapistId: Int, name: String?, size: Int): List<PatientWithRelation> {
-        val pageable = PageRequest.of(0, size, Sort.by("name").ascending())
-        val patients = userRepository.findPatients(name, pageable).content
+    fun execute(therapistId: Int, name: String?, size: Int, companyId: Int?): List<PatientWithRelation> {
         val myPatientIds = appointmentRepository.findPatientIdsByTherapistId(therapistId)
+
+        val patients = if (companyId != null) {
+            userRepository.findPatientsByCompanyId(companyId)
+                .let { list ->
+                    if (name.isNullOrBlank()) list
+                    else list.filter { it.name.contains(name, ignoreCase = true) }
+                }
+                .take(size)
+        } else {
+            val pageable = PageRequest.of(0, size, Sort.by("name").ascending())
+            userRepository.findPatients(name, pageable).content
+        }
 
         return patients
             .map { PatientWithRelation(patient = it, isMyPatient = it.id in myPatientIds) }
