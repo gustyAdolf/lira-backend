@@ -24,6 +24,12 @@ data class CheckinEntity(
 
     @Column(name = "total_hours", insertable = false, updatable = false)
     var totalHours: Double? = null,
+
+    @Column(name = "auto_closed", nullable = false)
+    var autoClosed: Boolean = false,
+
+    @Column(name = "company_id")
+    var companyId: Int? = null,
 )
 
 fun CheckinEntity.toDomain() = Checkin(
@@ -31,11 +37,15 @@ fun CheckinEntity.toDomain() = Checkin(
     userId = user.id,
     checkinTime = checkinTime,
     checkoutTime = checkoutTime,
-    totalHours = totalHours
+    totalHours = totalHours,
+    autoClosed = autoClosed,
+    companyId = companyId
 )
 
 fun Checkin.toEntity(userEntity: UserEntity) = CheckinEntity(
     user = userEntity,
     checkinTime = checkinTime,
     checkoutTime = checkoutTime,
+    autoClosed = autoClosed,
+    companyId = companyId,
 )

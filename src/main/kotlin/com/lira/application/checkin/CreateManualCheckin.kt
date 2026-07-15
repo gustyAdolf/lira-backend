@@ -2,16 +2,17 @@ package com.lira.application.checkin
 
 import com.lira.domain.checkin.Checkin
 import com.lira.domain.checkin.CheckinRepository
+import com.lira.infrastructure.checkin.dto.ManualCheckinRequest
+import com.lira.infrastructure.checkin.dto.toDomain
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.time.LocalDate
 
 @Service
-@Transactional(readOnly = true)
-class GetWorkDay(
+@Transactional
+class CreateManualCheckin(
     private val checkinRepository: CheckinRepository
 ) {
-    fun execute(userId: Int, date: LocalDate, companyId: Int? = null): List<Checkin> {
-        return checkinRepository.getWorkDay(userId, date, companyId)
+    fun execute(request: ManualCheckinRequest): Checkin {
+        return checkinRepository.createManual(request.toDomain())
     }
 }

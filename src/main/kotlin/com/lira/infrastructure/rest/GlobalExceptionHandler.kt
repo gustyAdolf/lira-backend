@@ -40,6 +40,34 @@ class GlobalExceptionHandler {
         return ApiResponse(ApiResponseStatus.FAILURE, e.message ?: "No hay check-in abierto")
     }
 
+    @ExceptionHandler(CheckinException.InvalidCheckinRangeException::class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    fun handlerInvalidCheckinRange(e: CheckinException.InvalidCheckinRangeException): ApiResponse<Unit> {
+        log.warn("Checkin rejected: ${e.message}")
+        return ApiResponse(ApiResponseStatus.FAILURE, e.message ?: "Rango de fichaje inválido")
+    }
+
+    @ExceptionHandler(CheckinException.FutureCheckinException::class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    fun handlerFutureCheckin(e: CheckinException.FutureCheckinException): ApiResponse<Unit> {
+        log.warn("Checkin rejected: ${e.message}")
+        return ApiResponse(ApiResponseStatus.FAILURE, e.message ?: "No se puede fichar en el futuro")
+    }
+
+    @ExceptionHandler(CheckinException.OverlappingCheckinException::class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    fun handlerOverlappingCheckin(e: CheckinException.OverlappingCheckinException): ApiResponse<Unit> {
+        log.warn("Checkin rejected: ${e.message}")
+        return ApiResponse(ApiResponseStatus.FAILURE, e.message ?: "El fichaje se solapa con otro registro")
+    }
+
+    @ExceptionHandler(CheckinException.InvalidDateRangeException::class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    fun handlerInvalidDateRange(e: CheckinException.InvalidDateRangeException): ApiResponse<Unit> {
+        log.warn("Checkin query rejected: ${e.message}")
+        return ApiResponse(ApiResponseStatus.FAILURE, e.message ?: "Rango de fechas inválido")
+    }
+
     @ExceptionHandler(BadCredentialsException::class, UsernameNotFoundException::class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     fun handleAuthError(e: Exception): ApiResponse<Unit> {

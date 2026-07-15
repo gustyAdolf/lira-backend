@@ -16,8 +16,9 @@ class Checkout(
     fun execute(checkinRequest: CheckoutRequest) {
         checkinRepository.checkout(
             checkinRequest.userId,
+            checkinRequest.companyId,
             checkinRequest.checkoutTime
         )
-        log.info("Checkout recorded: userId=${checkinRequest.userId}, time=${checkinRequest.checkoutTime}")
+        log.info("Checkout recorded: userId=${checkinRequest.userId}, companyId=${checkinRequest.companyId}, time=${checkinRequest.checkoutTime}")
     }
 }

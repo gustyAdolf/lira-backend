@@ -8,9 +8,11 @@ data class NewCheckinRequest(
     val userId: Int,
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     val checkinTime: LocalDateTime = LocalDateTime.now(),
+    val companyId: Int? = null,
 )
 
 fun NewCheckinRequest.toDomain() = Checkin(
     userId = userId,
-    checkinTime = this.checkinTime
+    checkinTime = this.checkinTime,
+    companyId = companyId
 )

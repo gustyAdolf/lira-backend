@@ -7,5 +7,7 @@ data class Checkin(
     val userId: Int,
     val checkinTime: LocalDateTime,
     val checkoutTime: LocalDateTime? = null,
-    val totalHours: Double? = null
+    val totalHours: Double? = null,
+    val autoClosed: Boolean = false,
+    val companyId: Int? = null
 )

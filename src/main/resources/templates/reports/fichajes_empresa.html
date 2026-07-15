@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <style>
+    @page { size: A4; margin: 18mm; }
+    body { font-family: Arial, Helvetica, sans-serif; font-size: 10.5px; color: #222; line-height: 1.5; margin: 0; }
+    .header { border-bottom: 2px solid #2E5BB7; padding-bottom: 8px; margin-bottom: 14px; }
+    .center-name { color: #2E5BB7; font-size: 15px; font-weight: bold; }
+    .center-sub { font-size: 9.5px; color: #555; margin-top: 2px; }
+    .report-title { text-align: center; margin-bottom: 10px; }
+    .report-title h1 { font-size: 14px; color: #2E5BB7; text-transform: uppercase; margin: 0 0 2px 0; }
+    .report-title .periodo { font-size: 9.5px; color: #555; }
+    .report-title .fecha { font-size: 9px; color: #777; }
+    .terapeuta { font-size: 11px; margin-bottom: 12px; }
+    .terapeuta strong { color: #2E5BB7; }
+    .resumen { display: table; width: 100%; margin-bottom: 14px; }
+    .resumen-item { display: table-cell; text-align: center; border: 1px solid #dde3f0; padding: 8px 4px; }
+    .resumen-num { font-size: 14px; font-weight: bold; color: #2E5BB7; }
+    .resumen-lbl { font-size: 8.5px; color: #666; text-transform: uppercase; margin-top: 2px; }
+    table.registros { width: 100%; border-collapse: collapse; margin-top: 6px; }
+    table.registros th { background: #f0f3fb; color: #2E5BB7; font-size: 8.5px; text-transform: uppercase; text-align: left; padding: 6px 6px; border-bottom: 1px solid #dde3f0; }
+    table.registros td { font-size: 9.5px; padding: 5px 6px; border-bottom: 1px solid #eee; }
+    .incidencia { color: #B8493A; font-weight: bold; }
+    .footer { margin-top: 24px; border-top: 1px solid #ddd; padding-top: 6px; font-size: 8.5px; color: #999; text-align: center; }
+  </style>
+</head>
+<body>
+
+  <!-- CABECERA -->
+  <div class="header">
+    <div class="center-name" th:text="${centro.nombre}">Centro Psicológico</div>
+    <div class="center-sub">
+      NIF/CIF: <span th:text="${centro.nif}">—</span>&#160;&#160;|&#160;&#160;<span th:text="${centro.direccion}">—</span>
+    </div>
+  </div>
+
+  <!-- TÍTULO -->
+  <div class="report-title">
+    <h1>Registro de Jornada Laboral</h1>
+    <div class="periodo">
+      Periodo: <span th:text="${periodo.desde}">—</span> – <span th:text="${periodo.hasta}">—</span>
+    </div>
+    <div class="fecha">Fecha de emisión: <span th:text="${fechaEmision}">—</span></div>
+  </div>
+
+  <div class="terapeuta">
+    Terapeuta: <strong th:text="${terapeuta.nombre}">—</strong>
+  </div>
+
+  <!-- RESUMEN -->
+  <div class="resumen">
+    <div class="resumen-item">
+      <div class="resumen-num" th:text="${resumen.totalHoras} + ' h'">—</div>
+      <div class="resumen-lbl">Horas totales</div>
+    </div>
+    <div class="resumen-item">
+      <div class="resumen-num" th:text="${resumen.mediaDiaria} + ' h'">—</div>
+      <div class="resumen-lbl">Media diaria</div>
+    </div>
+    <div class="resumen-item">
+      <div class="resumen-num" th:text="${resumen.incidencias}">—</div>
+      <div class="resumen-lbl">Incidencias</div>
+    </div>
+  </div>
+
+  <!-- TABLA DE REGISTROS -->
+  <table class="registros">
+    <thead>
+      <tr>
+        <th>Día</th>
+        <th>Entrada – Salida</th>
+        <th>Horas</th>
+        <th>Estado</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr th:each="fila : ${registros}">
+        <td th:text="${fila.fecha}">—</td>
+        <td th:text="${fila.sesiones}">—</td>
+        <td th:text="${fila.horas} + ' h'">—</td>
+        <td>
+          <span th:if="${fila.incidencia}" class="incidencia">Pendiente de revisión</span>
+          <span th:unless="${fila.incidencia}">—</span>
+        </td>
+      </tr>
+      <tr th:if="${#lists.isEmpty(registros)}">
+        <td colspan="4">Sin fichajes registrados en este periodo.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="footer">
+    Documento generado por Lira a partir de los registros de fichaje del terapeuta.
+  </div>
+
+</body>
+</html>
